@@ -1,3 +1,5 @@
+#ifndef IMAGE_H
+#define IMAGE_H
 typedef struct Image
 {
     char *type;
@@ -7,3 +9,6 @@ typedef struct Image
     int val_max;
     void *M;
 }Image;
+
+Image* new_image();
+#endif
