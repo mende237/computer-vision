@@ -107,18 +107,20 @@ List *reassignment(const List *cluster_tab, const struct Point **center_tab, int
     for (i = 0; i < nbr_cluster; i++)
     {
         List cluster = cluster_tab[i];
-        for (j = 0; j < cluster->length; j++)
-        {
-            Point *point = get_element_list(cluster, j);
-            int *tuple = nearest_point(point, center_tab, nbr_cluster);
-            if (tuple[0] != i)
+        if(cluster != NULL){
+            for (j = 0; j < cluster->length; j++)
             {
-                delete_element_list(cluster, j);
-                j--;
-                point->color = tuple[1];
-                queue_insertion(new_cluster_tab[i], point);
+                Point *point = get_element_list(cluster, j);
+                int *tuple = nearest_point(point, center_tab, nbr_cluster);
+                if (tuple[0] != i)
+                {
+                    delete_element_list(cluster, j);
+                    j--;
+                    point->color = tuple[1];
+                    queue_insertion(new_cluster_tab[i], point);
+                }
+                free(tuple);
             }
-            free(tuple);
         }
     }
 
@@ -151,17 +153,40 @@ boolean is_stable(const List *new_cluster_tab, const List *old_cluster_tab, int 
     return stable;
 }
 
+List *initialise(int **M , int nbr_line , int nbr_col , struct Point **center_tab , int nbr_cluster , List garbage){
+    typedef struct Point Point;
+    int i = 0 , j = 0;
+    List *clusters_tab = calloc(nbr_cluster, sizeof(List));
+    List cluster = new_list();
+    for (i = 0; i < nbr_line; i++)
+    {
+        for (j = 0; j < nbr_col; j++)
+        {
+
+            Point *point = new_Point(i , j, M[i][j]);
+            queue_insertion(garbage, point);
+            queue_insertion(cluster , point);
+        }
+    }
+
+    clusters_tab[0] = cluster; 
+    List *result = reassignment(clusters_tab, (const struct Point**)center_tab, nbr_cluster);
+    free_set_of_cluster(clusters_tab , nbr_cluster);
+    return result;
+    
+}
+
 Image *k_means(Image *image, int nbr_cluster)
 {
     printf("\nenter!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
     typedef struct Point Point;
-    int i = 0, x = 0, y = 0, color;
+    int i = 0, x = 0, y = 0, color , j = 0;
     int **M = (int **)image->M;
     List garbage = new_list();
 
     // initialisation de la liste des cluster
-    List *clusters_tab = calloc(nbr_cluster, sizeof(List));
-
+    
+    Point **center_tab = calloc(nbr_cluster , sizeof(Point*));
     for (i = 0; i < nbr_cluster; i++)
     {
         // initialisation des centres des nbr_cluster
@@ -171,21 +196,23 @@ Image *k_means(Image *image, int nbr_cluster)
 
         Point *point = new_Point(x, y, color);
         queue_insertion(garbage, point);
-        List cluster = new_list();
-        queue_insertion(cluster, point);
-        clusters_tab[i] = cluster;
+        center_tab[i] = point;
     }
+
+    //initialisation des cluster
+    List *clusters_tab = initialise(M , image->nbr_line , image->nbr_col , center_tab , nbr_cluster , garbage);
+
     //List garbage2 = new_list();
     boolean stable = True;
     do
     {
-        Point **center_tab = calloc(nbr_cluster, sizeof(Point *));
+        center_tab = calloc(nbr_cluster, sizeof(Point *));
         for (i = 0; i < nbr_cluster; i++)
         {
             center_tab[i] = calculate_center(clusters_tab[i]);
         }
 
-        List *new_cluster_tab = reassignment(clusters_tab , center_tab, nbr_cluster);
+        List *new_cluster_tab = reassignment(clusters_tab , (const struct Point**)center_tab, nbr_cluster);
         stable = is_stable(new_cluster_tab, clusters_tab, nbr_cluster);
 
         free_set_of_cluster(clusters_tab, nbr_cluster);
@@ -197,16 +224,35 @@ Image *k_means(Image *image, int nbr_cluster)
         }
         free(center_tab);
     } while (stable == False);
-
     //free_list(garbage2);
+
+    int **M_R = new_int_matrix(image->nbr_line , image->nbr_col);
+    for (i = 0; i < nbr_cluster; i++)
+    {
+        List cluster = clusters_tab[i];
+        for (j = 0; j < cluster->length; j++)
+        {
+            Point *p = get_element_list(cluster , j);
+            M_R[p->x][p->y] = p->color;
+        }
+        
+    }
+
+    int max = 255;
+    char *c = comment("dimitri");
+    char *type = calloc(strlen(image->type), sizeof(char));
+    strcpy(type, image->type);
+    Image *image_R = new_image(M_R , type , c , max , image->nbr_line , image->nbr_col);
+    
 
     for (i = 0; i < garbage->length; i++)
     {
         free(get_element_list(garbage, i));
     }
     free_list(garbage);
+    free_set_of_cluster(clusters_tab , nbr_cluster);
     printf("\npasssss!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-    return NULL;
+    return image_R;
 }
 
 void free_set_of_cluster(List *tab, int nbr_cluster)
@@ -221,11 +267,6 @@ void free_set_of_cluster(List *tab, int nbr_cluster)
 
 void free_cluster(List cluster)
 {
-    // int i = 0;
-    // for (i = 0; i < cluster->length; i++)
-    // {
-    //     free(get_element_list(cluster , i));
-    // }
     free_list(cluster);
 }
 

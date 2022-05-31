@@ -134,8 +134,8 @@ Image *averaging_filter(Image *image, int height, int width)
     //int **test_M = image->M;
     Matrix conv_M = new_matrix(conv, height, width);
     Matrix M_result = convolution(M , conv_M);
-    int max = select_max_matrix(M_result);
-    max = 255;
+    //int max = select_max_matrix(M_result);
+    int max = 255;
     char *c = comment("dimitri");
     char *type = calloc(strlen(image->type), sizeof(char));
     strcpy(type, image->type);

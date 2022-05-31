@@ -30,6 +30,8 @@ int *nearest_point(const struct Point *point, const struct Point **center_tab, i
 boolean equal_point(void *val1, void *val2, ...);
 // verifie si l'ensemble des clusters est stable
 boolean is_stable(const List *new_cluster_tab, const List *old_cluster_tab, int nbr_cluster);
+// initialisation des cluster en fonction des centres
+List *initialise(int **M, int nbr_line, int nbr_col, struct Point **center_tab, int nbr_cluster, List garbage);
 // l'agorithme k_means
 Image *k_means(Image *image, int nbr_cluster);
 
