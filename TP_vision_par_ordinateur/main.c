@@ -5,13 +5,14 @@
 #include "source/utilitaire.c"
 #include "source/convolution.c"
 #include "source/operations.c"
+#include "source/segmentation.c"
 #include "source/struct/matrix.c"
 
 int main()
 {
     int i = 0 , j = 0;
     Image *image1 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
-    Image *image_test = read_image("maison.pgm");
+    Image *image_test = read_image("circuit.pgm");
     Image *image2 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
     Image *image = add_PGM_images(image1 , image2);
     Image *image_R;
@@ -25,8 +26,10 @@ int main()
     ///float c = contraste(image1);
     ///printf("le contraste est %f\n" , c);
     //image_R = averaging_filter(image_test, 3, 3);
-    //image_R = gaussian_filter(image_test, 3, 5, 100);
-    image_R = median_filter(image_test, 3, 3);
+    image_R = gaussian_filter(image_test, 3, 3, 100);
+    k_means(image1 , 5);
+
+    //image_R = median_filter(image_test, 3, 3);
     //convolution(M , conv_M);
     // printf("\n**************************************************\n%s %s\n" , image->type, image->comment);
     // printf("%d %d\n" , image->nbr_line , image->nbr_col);

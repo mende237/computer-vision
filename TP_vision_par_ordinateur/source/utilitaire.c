@@ -73,7 +73,7 @@ void write_image(char *path, Image *image)
     fputc('\n', file);
     fputs(image->comment, file);
     fputc('\n', file);
-    fprintf(file, "%d %d\n", image->nbr_line, image->nbr_col);
+    fprintf(file, "%d %d\n", image->nbr_col, image->nbr_line);
     // dans le cas ou il ne s'agit pas d'une image binaire on ercit la valeur max
     if (strcasecmp(image->type, "P1") != 0)
         fprintf(file, "%d\n", image->val_max);
@@ -149,7 +149,7 @@ void read_head(FILE *file, Image *image)
     comment[length] = '\0';
     int nbr_line = 0, nbr_col = 0, max_value = 1;
     fgetc(file);
-    fscanf(file, "%d %d", &nbr_line, &nbr_col);
+    fscanf(file, "%d %d", &nbr_col, &nbr_line);
     // dans le cas ou il ne s'agit pas d'une image binaire on lit la valeur max
     if (strcasecmp(image->type, "P1") != 0)
         fscanf(file, "%d", &max_value);

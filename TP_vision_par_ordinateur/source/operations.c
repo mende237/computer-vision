@@ -229,4 +229,5 @@ Image* multiplication_PGM_images(Image *image1, Image *image2)
 {
 
 }
+
 #endif

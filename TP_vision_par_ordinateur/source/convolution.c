@@ -16,9 +16,8 @@ Matrix convolution(Matrix Mat, Matrix conv_M)
     int **matrix = (int **)Mat.M;
     float **conv_matrix = (float **)conv_M.M;
 
-    
     int i = 0, j = 0, k = 0, q = 0, x = 0, y = 0, val = 0;
-   
+
     int debut_x = conv_M.nbr_line / 2;
     int debut_y = conv_M.nbr_colonne / 2;
     for (i = debut_x; i < Mat.nbr_line - (conv_M.nbr_line / 2); i++)
@@ -32,14 +31,12 @@ Matrix convolution(Matrix Mat, Matrix conv_M)
             {
                 for (q = j - (conv_M.nbr_colonne / 2); q <= j + (conv_M.nbr_colonne / 2); q++)
                 {
-                    val = val + matrix[k][q] * conv_matrix[x][y];
+                    M[i][j] += matrix[k][q] * conv_matrix[x][y];
                     y++;
                 }
                 x++;
                 y = 0;
             }
-            M[i][j] = val;
-            //printf("%d\n", val);
         }
     }
     Matrix result = new_matrix(M, Mat.nbr_line, Mat.nbr_colonne);
@@ -107,9 +104,12 @@ Image *gaussian_filter(Image *image, int height, int width, float amplitude)
         for (j = 0; j < width; j++)
             conv[i][j] = conv[i][j] / total;
 
+    //int **test_M = image->M;
     Matrix conv_M = new_matrix(conv, height, width);
-    Matrix M_result = convolution(M, conv_M);
+    Matrix M_result = convolution(M , conv_M);
+
     int max = select_max_matrix(M_result);
+    max = 255;
     char *c = comment("dimitri");
     char *type = calloc(strlen(image->type), sizeof(char));
     strcpy(type, image->type);
@@ -126,37 +126,40 @@ Image *averaging_filter(Image *image, int height, int width)
     int total = height * width;
     for (i = 0; i < height; i++)
     {
-        for (j = 0; i < width; i++)
+        for (j = 0; j < width; j++)
         {
-            conv[i][j] = (float)1 / total;
+            conv[i][j] = 1.0 / total;
         }
     }
-
-    Matrix conv_M = new_matrix(conv, 3, 3);
-    Matrix M_result = convolution(M, conv_M);
+    //int **test_M = image->M;
+    Matrix conv_M = new_matrix(conv, height, width);
+    Matrix M_result = convolution(M , conv_M);
     int max = select_max_matrix(M_result);
+    max = 255;
     char *c = comment("dimitri");
     char *type = calloc(strlen(image->type), sizeof(char));
     strcpy(type, image->type);
     Image *image_R = new_image(M_result.M, type, c, max, M_result.nbr_line, M_result.nbr_colonne);
+    return image_R;
 }
 
 Image *median_filter(Image *image, int height, int width)
 {
     int **M = new_int_matrix(image->nbr_line, image->nbr_col);
     int **matrix = (int **)image->M;
-    int i = 0 , j = 0 , k = 0 , q = 0 , cmpt = 0;
+    int i = 0, j = 0, k = 0, q = 0, cmpt = 0;
 
     int debut_x = height / 2;
     int debut_y = width / 2;
     int *temp;
-    int middle = (height * width)/2;
+    int middle = (height * width) / 2;
+    int size = height * width;
     for (i = debut_x; i < image->nbr_line - debut_x; i++)
     {
         for (j = debut_y; j < image->nbr_col - debut_y; j++)
         {
             cmpt = 0;
-            temp = calloc(height*width , sizeof(int));
+            temp = calloc(height * width, sizeof(int));
             for (k = i - debut_x; k <= i + debut_x; k++)
             {
                 for (q = j - debut_y; q <= j + debut_y; q++)
@@ -165,11 +168,8 @@ Image *median_filter(Image *image, int height, int width)
                     cmpt++;
                 }
             }
-            
-            M[i][j] = temp[middle - 1];
-            if (matrix[i][j] != temp[middle - 1]){
-                printf("old new %d %d\n", matrix[i][j], temp[middle-1]);
-            }
+            qsort(temp, size, sizeof(int), compare);
+            M[i][j] = temp[middle];
             free(temp);
         }
     }
@@ -182,5 +182,4 @@ Image *median_filter(Image *image, int height, int width)
     Image *image_R = new_image(M_result.M, type, c, max, M_result.nbr_line, M_result.nbr_colonne);
     return image_R;
 }
-
 #endif
