@@ -19,7 +19,11 @@ struct element
     struct element *next;
 };
 
-
-
+struct Point
+{
+    int x;
+    int y;
+    int color;
+};
 
 #endif

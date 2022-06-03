@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "../header/operations.h"
-#include "struct/image.c"
-#include "utilitaire.c"
+#include "../../header/base_operations/operations.h"
+#include "../struct/image.c"
+#include "../utilitaire/utilitaire.c"
 
 
 

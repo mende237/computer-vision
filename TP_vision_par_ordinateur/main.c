@@ -2,19 +2,20 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "source/utilitaire.c"
-#include "source/convolution.c"
-#include "source/operations.c"
-#include "source/segmentation.c"
+#include "source/utilitaire/utilitaire.c"
+#include "source/convolution/convolution.c"
+#include "source/base_operations/operations.c"
 #include "source/struct/matrix.c"
+#include "source/segmentation/k_means.c"
+#include "source/segmentation/germ.c"
+#include "source/filter/high_pass/gradient.c"
+#include "source/filter/low_pass/low_filter.c"
 
 int main()
 {
     int i = 0, j = 0;
-
-
-    Image *image1 = read_image("/home/dimitri/Bureau/fruits.pgm");
-    Image *image_test = read_image("circuit.pgm");
+    Image *image1 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
+    Image *image_test = read_image("oiseau.pgm");
     Image *image2 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
     Image *image = add_PGM_images(image1, image2);
     Image *image_R;
@@ -28,10 +29,10 @@ int main()
     /// float c = contraste(image1);
     /// printf("le contraste est %f\n" , c);
     // image_R = averaging_filter(image_test, 3, 3);
-    //image_R = gaussian_filter(image_test, 3, 3, 100);
-    image_R = k_means(image1 , 6);
-    printf("toto\n");
-    // image_R = median_filter(image_test, 3, 3);
+    // image_R = gaussian_filter(image_test, 3, 5, 100);
+    // image_R = germ(image_test, 7 , 25);
+    image_R = sobel(image_test , -1);
+    // image_R = median_filter(image_test, 11, 11);
     // convolution(M , conv_M);
     //  printf("\n**************************************************\n%s %s\n" , image->type, image->comment);
     //  printf("%d %d\n" , image->nbr_line , image->nbr_col);
@@ -56,5 +57,3 @@ int main()
     // printf("%d", strlen("1111111111111111111111111111111111111111111111111111111111111111111111"));
     return EXIT_SUCCESS;
 }
-
-

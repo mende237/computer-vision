@@ -1,6 +1,7 @@
 #ifndef OPERATIONS_H
 #define OPERATIONS_H
-#include "struct/Image.h"
+#include "../struct/Image.h"
+#include "../struct/matrix.h"
 
 void *histogram(Image *image);
 Image *equal_histogram(Image *image);

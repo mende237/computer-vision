@@ -1,23 +1,14 @@
-#ifndef SEGMENTATION_C
-#define SEGMENTATION_C
+#ifndef K_MEANS_C
+#define K_MEANS_C
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 
-#include "data_structure/linked_list.c"
-#include "../header/segmentation.h"
-#include "struct/image.c"
-#include "utilitaire.c"
-
-struct Point *new_Point(int x, int y, int color)
-{
-    typedef struct Point Point;
-    Point *point = calloc(1, sizeof(Point));
-    point->x = x;
-    point->y = y;
-    point->color = color;
-}
+#include "../data_structure/linked_list.c"
+#include "../../header/segmentation/k_means.h"
+#include "../struct/image.c"
+#include "../utilitaire/utilitaire.c"
 
 struct Point *copy_point(const struct Point *point)
 {
@@ -117,6 +108,9 @@ List *reassignment(const List *cluster_tab, const struct Point **center_tab, int
                     delete_element_list(cluster, j);
                     j--;
                     point->color = tuple[1];
+                    queue_insertion(new_cluster_tab[tuple[0]], point);
+                }else{
+                    point->color = center_tab[i]->color;
                     queue_insertion(new_cluster_tab[i], point);
                 }
                 free(tuple);
@@ -127,16 +121,7 @@ List *reassignment(const List *cluster_tab, const struct Point **center_tab, int
     return new_cluster_tab;
 }
 
-boolean equal_point(void *val1, void *val2, ...)
-{
-    typedef struct Point Point;
-    Point *p1 = val1;
-    Point *p2 = val2;
-    if (p1 == p2)
-        return True;
 
-    return False;
-}
 
 boolean is_stable(const List *new_cluster_tab, const List *old_cluster_tab, int nbr_cluster)
 {
@@ -144,9 +129,13 @@ boolean is_stable(const List *new_cluster_tab, const List *old_cluster_tab, int 
     int i = 0, j = 0;
     do
     {
-        if (include_value_list(new_cluster_tab[i], old_cluster_tab[i], equal_point) == False)
-        {
+        if (new_cluster_tab[i]->length != old_cluster_tab[i]->length){
             stable = False;
+        }else{
+            if (include_value_list(new_cluster_tab[i], old_cluster_tab[i], equal_point) == False)
+            {
+                stable = False;
+            }
         }
         i++;
     } while (stable == True && i < nbr_cluster);
@@ -193,7 +182,7 @@ Image *k_means(Image *image, int nbr_cluster)
         x = rand() % image->nbr_line;
         y = rand() % image->nbr_col;
         color = M[x][y];
-
+        printf("x %d , y %d\n" , x , y);
         Point *point = new_Point(x, y, color);
         queue_insertion(garbage, point);
         center_tab[i] = point;
@@ -201,7 +190,16 @@ Image *k_means(Image *image, int nbr_cluster)
 
     //initialisation des cluster
     List *clusters_tab = initialise(M , image->nbr_line , image->nbr_col , center_tab , nbr_cluster , garbage);
+    // for (i = 0; i < nbr_cluster; i++)
+    // {
+    //     int r1 = rand() % clusters_tab[i]->length;
+    //     int r2 = rand() % clusters_tab[i]->length;
 
+    //     Point *p1 = get_element_list(clusters_tab[i] , r1);
+    //     Point *p2 = get_element_list(clusters_tab[i],  r2);
+    //     printf("length :%d color1 : %d color2 : %d\n", clusters_tab[i]->length , p1->color , p2->color);
+    // }
+    
     //List garbage2 = new_list();
     boolean stable = True;
     do
@@ -212,7 +210,32 @@ Image *k_means(Image *image, int nbr_cluster)
             center_tab[i] = calculate_center(clusters_tab[i]);
         }
 
+
         List *new_cluster_tab = reassignment(clusters_tab , (const struct Point**)center_tab, nbr_cluster);
+        
+        printf("********************old********************\n");
+        for (i = 0; i < nbr_cluster; i++)
+        {
+            int r1 = rand() % clusters_tab[i]->length;
+            int r2 = rand() % clusters_tab[i]->length;
+
+            Point *p1 = get_element_list(clusters_tab[i], r1);
+            Point *p2 = get_element_list(clusters_tab[i], r2);
+            printf("length :%d color1 : %d color2 : %d\n", clusters_tab[i]->length, p1->color, p2->color);
+        }
+
+
+        printf("********************new********************\n");
+        for (i = 0; i < nbr_cluster; i++)
+        {
+            int r1 = rand() % new_cluster_tab[i]->length;
+            int r2 = rand() % new_cluster_tab[i]->length;
+
+            Point *p1 = get_element_list(new_cluster_tab[i], r1);
+            Point *p2 = get_element_list(new_cluster_tab[i], r2);
+            printf("length :%d color1 : %d color2 : %d\n", new_cluster_tab[i]->length, p1->color, p2->color);
+        }
+        
         stable = is_stable(new_cluster_tab, clusters_tab, nbr_cluster);
 
         free_set_of_cluster(clusters_tab, nbr_cluster);

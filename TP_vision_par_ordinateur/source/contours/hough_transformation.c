@@ -1,0 +1,4 @@
+#ifndef HOUGH_TRANSFORMATION_C
+#define HOUGH_TRANSFORMATION_C
+
+#endif

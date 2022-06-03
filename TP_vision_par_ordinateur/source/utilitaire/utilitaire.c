@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "../header/utilitaire.h"
-#include "struct/matrix.c"
+#include "../../header/utilitaire/utilitaire.h"
+#include "../struct/matrix.c"
 
 char *comment(char *c)
 {
@@ -251,8 +251,10 @@ Image *read_image(char *path)
     Image *image = malloc(sizeof(Image));
 
     FILE *file = fopen(path, "r");
-    if (file == NULL)
+    if (file == NULL){
+        printf("impossible d'ouvrir le fichier %s" , path);
         exit(EXIT_FAILURE);
+    }
 
     int length = 0;
     length = calculate_length_line(file);
@@ -317,6 +319,26 @@ int compare(const void *a, const void *b){
 
     return *pa - *pb;
 
+}
+
+struct Point *new_Point(int x, int y, int color)
+{
+    typedef struct Point Point;
+    Point *point = calloc(1, sizeof(Point));
+    point->x = x;
+    point->y = y;
+    point->color = color;
+}
+
+boolean equal_point(void *val1, void *val2, ...)
+{
+    typedef struct Point Point;
+    Point *p1 = val1;
+    Point *p2 = val2;
+    if (p1->x == p2->x && p1->y == p2->y)
+        return True;
+
+    return False;
 }
 
 #endif
