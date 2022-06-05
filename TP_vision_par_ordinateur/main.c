@@ -9,6 +9,7 @@
 #include "source/segmentation/k_means.c"
 #include "source/segmentation/germ.c"
 #include "source/filter/high_pass/gradient.c"
+#include "source/filter/high_pass/laplacien.c"
 #include "source/filter/low_pass/low_filter.c"
 
 int main()
@@ -31,7 +32,7 @@ int main()
     // image_R = averaging_filter(image_test, 3, 3);
     // image_R = gaussian_filter(image_test, 3, 5, 100);
     // image_R = germ(image_test, 7 , 25);
-    image_R = sobel(image_test , -1);
+    image_R = laplacien(image_test , -1);
     // image_R = median_filter(image_test, 11, 11);
     // convolution(M , conv_M);
     //  printf("\n**************************************************\n%s %s\n" , image->type, image->comment);
