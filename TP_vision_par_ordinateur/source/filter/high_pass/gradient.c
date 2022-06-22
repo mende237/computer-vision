@@ -320,8 +320,11 @@ Image *gradient(Image *image, int threshold)
         image_R = new_image(result.M, type , c, max, image->nbr_line, image->nbr_col);
         free_matrix(temp, 1);
     }
-    else
+    else if(threshold = 0)
     {
+        strcpy(type, image->type);
+        image_R = new_image(M_R, type, c, max, image->nbr_line, image->nbr_col);
+    }else{
         strcpy(type, image->type);
         image_R = new_image(M_R, type, c, max, image->nbr_line, image->nbr_col);
     }

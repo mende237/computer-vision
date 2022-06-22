@@ -1,7 +1,9 @@
 // #ifndef THRESHOLDING_C
 // #define THRESHOLDING_C
 
+#include <math.h>
 #include "../../header/struct/Image.h"
+#include "../../header/struct/structure.h"
 #include "../../header/struct/matrix.h"
 #include "../../header/base_operations/operations.h"
 #include "../../header/utilitaire/utilitaire.h"
@@ -26,77 +28,99 @@ Matrix thresholding_matrix(Matrix matrix, int threshold)
 }
 
 
-
-
-static double compute_otsu(int *hist, int min, int max, int height, int width)
+static float* compute_otsu(float* hist_norm , int min, int max, int nbr_pixel)
 {
-    int i, j;
-    double moyen = 0.0, w0G, somme = 0.0, u0, var = 0.0, var1;
-    double varience, sq, difference;
-
-    for (i = min; i <= max; i++)
+    int i = 0, j = 0;
+    float *prob_var = calloc(2 , sizeof(float));
+    float q = 0 , average = 0 , var = 0;
+    
+    for (i = min ; i <= max; i++)
     {
-        // wt = wt + hist[i];
-        moyen = moyen + i * hist[i];
-        somme = somme + hist[i];
+        q += hist_norm[i];
     }
-    if (somme != 0.0)
-    {
-        w0G = somme / (height * width); // calcu de la distribution de proba
-        u0 = moyen / somme;                // moyenne U1
-        for (j = min; j <= max; j++)       // calcul de la varience
+    
+    if(q != 0){
+        prob_var[0] = q;
+        for (i = min; i <= max; i++)
         {
-            difference = j - u0;
-            sq = pow(difference, 2);
-            var = var + (sq * hist[j]);
+            average += i*hist_norm[i];
         }
-        var1 = var / somme;
-        varience = w0G * pow(var1, 2);
-        return (varience);
+        average /= q;
+        for (i = min; i <= max; i++)
+        {
+            var += pow(i - average , 2)*hist_norm[i];
+        }
+        var /= q;
+        prob_var[1] = var;
+        return prob_var;
+    }else{
+        return NULL;
     }
-    else
-        return (0.0);
 }
 
-int otsu(int hauteur, int largeur, Image *img)
+static int compare(const void *tuple1, const void *tuple2)
 {
+    typedef struct Tuple Tuple;
+    Tuple const *t1 = *((Tuple**) tuple1);
+    Tuple const *t2 = *((Tuple**) tuple2);
+    float b1 = *((float*) t1->b);
+    float b2 = *((float*) t2->b);
 
-    double var1, var2, thes, temp, whitin_variance[255], triIntra[255];
-    int *hist = histogram(img);
+    return b1 - b2;
+}
 
-    int i, j, t, threshold;
-    // on appelle l'agorithme de otsu pour chaque threshold
-    for (i = 0; i < 254; i++)
+int otsu(Image *image)
+{
+    typedef struct Tuple Tuple;
+
+    double var1 = 0, var2 = 0;
+    Tuple **within_variance = calloc(255 , sizeof(Tuple*));
+
+    int *hist = histogram(image);
+    float *hist_norm = normalise_histogram(hist , image->nbr_col * image->nbr_col);
+
+    int i = 0 , j = 0 , nbr_pixel = image->nbr_line*image->nbr_col;
+    
+    for (i = 0; i < 255; i++)
     {
-        var1 = compute_otsu(hist, 0, i, hauteur, largeur);
-        var2 = compute_otsu(hist, i + 1, 255, hauteur, largeur);
-        whitin_variance[i] = var1 + var2;
-        triIntra[i] = whitin_variance[i];
-    }
-
-    for (i = 1; i < 254; i++)
-    {
-        for (j = 1; j < 254 - i; j++)
-        {
-
-            if (whitin_variance[i] < whitin_variance[j])
-            {
-                temp = whitin_variance[i];
-                whitin_variance[i] = whitin_variance[j];
-                whitin_variance[j] = temp;
-            }
+        float *prob_var1 = compute_otsu(hist_norm, 0, i, nbr_pixel);
+        float *prob_var2 = compute_otsu(hist_norm, i + 1, 255 , nbr_pixel);
+        float *var = calloc(1 , sizeof(float));
+        if(prob_var1 != NULL && prob_var2 != NULL){
+            *var = prob_var1[0] * prob_var1[1] + prob_var2[0] * prob_var2[1];
+        }else if(prob_var1 != NULL){
+            *var = prob_var1[0] * prob_var1[1];
+        }else if(prob_var2 != NULL){
+            *var = prob_var2[0] * prob_var2[1];
+        }else{
+            *var = 0; 
         }
+
+        int *threshold = calloc(1 , sizeof(int));
+        *threshold = i;
+        Tuple *tuple = new_tuple(threshold , var);
+        within_variance[i] = tuple;
+        Tuple *t = within_variance[i];
+        float b1 = *((float *)t->b);
+        printf("b %f\n", b1);
     }
 
-    thes = whitin_variance[2];
-    for (i = 1; i <= 255; i++)
+    qsort(within_variance , 255 , sizeof(Tuple*), compare);
+    Tuple *t = within_variance[0];
+    printf("llksd %f\n" , *((float*) t->b));
+    int threshold = *((int*) t->a);
+    for (i = 0; i < 255; i++)
     {
-        if (triIntra[i] == thes)
-            threshold = i;
+        free_tuple(within_variance[i] , 1);
     }
+    
+    free(within_variance);
 
-    printf("le threshold min est %d", threshold);
-    return (threshold);
+    
+    free(hist);
+    free(hist_norm);
+
+    return threshold;
 }
 
 // #endif

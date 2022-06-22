@@ -5,6 +5,7 @@
 
 void *histogram(Image *image);
 Image *equal_histogram(Image *image);
+float* normalise_histogram(int *hist , int nbr_pixel);
 Image *linear_transformation(Image *image, int min, int max);
 int equal_pixel(void *p1, void *p2, char *image_type);
 int pixel_content(int *hist, int val);

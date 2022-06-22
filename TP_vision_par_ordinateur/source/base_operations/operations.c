@@ -11,8 +11,9 @@
 Image *equal_histogram(Image *image)
 {
     int *hist = (int *)histogram(image);
-    float hist_norm[256];
+    
     int i = 0, j = 0, nbr_pixel = image->nbr_col * image->nbr_line;
+    float *hist_norm = normalise_histogram(hist , nbr_pixel);
     for (i = 0; i < 256; i++)
     {
         hist_norm[i] = (float)hist[i] / nbr_pixel;
@@ -41,6 +42,7 @@ Image *equal_histogram(Image *image)
     char *type = calloc(strlen(image->type), sizeof(char));
     strcpy(type, image->type);
     Image *image_R = new_image(M, type, c, image->val_max, image->nbr_line, image->nbr_col);
+    free(hist_norm);
     return image_R;
 }
 
@@ -134,6 +136,16 @@ void *histogram(Image *image)
     else
     {
     }
+}
+
+float *normalise_histogram(int *hist , int nbr_pixel){
+    int i = 0;
+    float *hist_norm = calloc(256 , sizeof(float));
+    for (i = 0; i < 256; i++)
+    {
+        hist_norm[i] = (float)hist[i] / nbr_pixel;
+    }
+    return hist_norm;
 }
 
 float contraste_matrix(Matrix Mat)

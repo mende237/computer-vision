@@ -109,6 +109,14 @@ Image *averaging_filter(Image *image, int height, int width)
     return image_R;
 }
 
+static int compare(const void *a, const void *b)
+{
+    int const *pa = a;
+    int const *pb = b;
+
+    return *pa - *pb;
+}
+
 Image *median_filter(Image *image, int height, int width)
 {
     int **M = new_int_matrix(image->nbr_line, image->nbr_col);

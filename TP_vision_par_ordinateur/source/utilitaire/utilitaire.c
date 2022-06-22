@@ -326,13 +326,7 @@ int select_max_matrix(Matrix Mat){
     return max;
 }
 
-int compare(const void *a, const void *b){
-    int const *pa = a;
-    int const *pb = b;
 
-    return *pa - *pb;
-
-}
 
 struct Point *new_Point(int x, int y, int color)
 {

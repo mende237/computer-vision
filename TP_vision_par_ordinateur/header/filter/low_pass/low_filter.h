@@ -9,5 +9,7 @@ Image *averaging_filter(Image *image, int height, int width);
 
 Image *median_filter(Image *image, int height, int width);
 
+static int compare(const void *a, const void *b);
+
 #endif
 

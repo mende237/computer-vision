@@ -3,8 +3,9 @@
 #include "../struct/Image.h"
 #include "../struct/matrix.h"
 
-static double compute_otsu(int *hist, int min, int max, int height, int width);
-int otsu(int hauteur, int largeur, Image *img);
+
+static float compute_otsu(int *hist, int min, int max, int height, int width);
+int otsu(Image *img);
 Matrix thresholding_matrix(Matrix matrix, int threshold);
 
 #endif

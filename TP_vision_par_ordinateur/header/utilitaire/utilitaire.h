@@ -19,10 +19,11 @@ int **new_int_matrix(int nbr_line, int nbr_col);
 float **new_float_matrix(int nbr_line, int nbr_col);
 char bit_to_char(int bit);
 int select_max_matrix(Matrix M);
-int compare(const void *a, const void *b);
 // creation d'un point
 struct Point *new_Point(int x, int y, int color);
 boolean equal_point(void *val1, void *val2, ...);
 struct Tuple *new_tuple(void *a, void *b);
 void free_tuple(struct Tuple *tuple , int free_inner);
+void free_image(Image *image);
+
 #endif

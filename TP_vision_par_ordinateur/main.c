@@ -7,7 +7,13 @@
 #include "header/segmentation/germ.h"
 #include "header/filter/high_pass/gradient.h"
 #include "header/filter/high_pass/laplacien.h"
+#include "header/filter/high_pass/laplacien.h"
+#include "header/filter/low_pass/low_filter.h"
 #include "header/transformations/hough_transformation.h"
+#include "header/utilitaire/utilitaire.h"
+#include "header/base_operations/operations.h"
+#include "header/segmentation/thresholding.h"
+#include "header/struct/Image.h"
 
 
 void handle_args(int argc, char *argv[]);
@@ -341,20 +347,20 @@ void handle_args(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-    //handle_args(argc, argv);
-    //int *t;
-    //compute_otsu(t , 2 , 2 ,3 , 3);
+    // handle_args(argc, argv);
+    // exit(EXIT_SUCCESS);
     int a = atoi("aqdqsd");
     printf("%d\n", a);
     // int i = 0, j = 0;
     // Image *image1 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
-    //Image *image_test = read_image("obscure.pgm");
+    Image *image_test = read_image("empreinte.pgm");
     // Image *image2 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
     // Image *image = add_PGM_images(image1, image2);
-    ///Image *image_R;
+    Image *image_R;
 
-    // // image_R = equal_histogram(image_test);
-
+    //image_R = equal_histogram(image_test);
+    int threshold = otsu(image_test);
+    printf("le seuil est %d\n" , threshold);
     // // Matrix M = new_matrix(image1->M , image1->nbr_line , image1->nbr_col);
     // // int** conv = new_int_matrix(3 , 3);
     // // Matrix conv_M = new_matrix(conv , 3 , 3);
@@ -396,8 +402,8 @@ int main(int argc, char *argv[])
     // // printf("cal = %d , reel = %d\n" , r , image1->nbr_line * image1->nbr_col);
     // // free_matrix(M , 0);
     // // free_matrix(conv_M , 1);
-   // write_image("result/result.pgm", image_R);
-    //free_image(image_test);
+    //write_image("result/result.pgm", image_R);
+    free_image(image_test);
     // free_image(image2);
     // free_image(image);
     //free_image(image_R);
