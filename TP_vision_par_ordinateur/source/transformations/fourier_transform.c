@@ -1,5 +1,5 @@
-#ifndef FOURIER_TRANSFORM_C
-#define FOURIER_TRANSFORM_C
+// #ifndef FOURIER_TRANSFORM_C
+// #define FOURIER_TRANSFORM_C
 #include "../../header/transformations/fourier_transform.h"
 
-#endif
+// #endif

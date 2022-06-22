@@ -7,8 +7,8 @@
 #include "../../../header/filter/high_pass/laplacien.h"
 #include "../../../header/convolution/convolution.h"
 #include "../../../header/segmentation/thresholding.h"
-
-Image *laplacien(Image *image, int threshold){
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Image *laplacien(Image *image, int threshold)
+{
     Matrix matrix = new_matrix(image->M, image->nbr_line, image->nbr_col);
 
     float **L = new_float_matrix(3, 3);

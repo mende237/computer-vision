@@ -8,6 +8,7 @@ Image *new_image(void *M , char *type , char* comment , int max_value , int nbr_
     image->comment = comment;
     image->val_max = max_value;
     image->nbr_line = nbr_line;
+    
     image->nbr_col = nbr_col;
     image->M = M;
     return image;

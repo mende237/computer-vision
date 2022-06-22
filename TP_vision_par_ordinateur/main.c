@@ -9,6 +9,7 @@
 #include "header/filter/high_pass/laplacien.h"
 #include "header/transformations/hough_transformation.h"
 
+
 void handle_args(int argc, char *argv[]);
 void handle_error_type_image(Image *image, char *operation);
 int handle_convert_error(char *nbr, char *operation);

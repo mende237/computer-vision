@@ -1,5 +1,5 @@
-#ifndef HOUGH_TRANSFORMATION_C
-#define HOUGH_TRANSFORMATION_C
+// #ifndef HOUGH_TRANSFORMATION_C
+// #define HOUGH_TRANSFORMATION_C
 #include <string.h>
 #include <math.h>
 #include <search.h>
@@ -12,6 +12,7 @@
 #include "../../header/filter/high_pass/gradient.h"
 #include "../../header/filter/high_pass/laplacien.h"
 #include "../../header/data_structure/linked_list.h"
+#include "../../header/struct/Image.h"
 
 #define PI 3.14159
 
@@ -32,6 +33,13 @@ boolean equal_tuple1(void *tuple1, void *tuple2,...)
     return False;
 }
 
+static float absolute_value(float);
+static float absolute_value(float value){
+    if(value < 0)
+        return -1*value;
+
+    return value;
+}
 Image *voting_image(Image *image, float step, char *outline_algorithm)
 {
     Image *image_outline = NULL;
@@ -117,8 +125,8 @@ Image *voting_image(Image *image, float step, char *outline_algorithm)
             int *temp = e.data;
             for (j = 0; j < length; j++)
             {
-                int x =  abs(atof(key_tab[i])*cos(temp[j]));
-                int y =  abs(atof(key_tab[i])*sin(temp[j]));
+                int x = absolute_value(atof(key_tab[i])*cos(temp[j]));
+                int y = absolute_value(atof(key_tab[i]) * sin(temp[j]));
                 M_R[x][y] = 20;
             }
         }
@@ -145,4 +153,4 @@ Image *voting_image(Image *image, float step, char *outline_algorithm)
     return image_R;
 }
 
-#endif
+// #endif

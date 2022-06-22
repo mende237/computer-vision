@@ -1,5 +1,5 @@
-#ifndef MATRIX_C
-#define MATRIX_C
+// #ifndef MATRIX_C
+// #define MATRIX_C
 #include <stdlib.h>
 #include "../../header/struct/matrix.h"
 
@@ -25,4 +25,4 @@ void free_matrix(Matrix M, int free_inner_mat)
     }
 }
 
-#endif
+// #endif
