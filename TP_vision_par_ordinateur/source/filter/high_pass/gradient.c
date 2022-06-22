@@ -1,14 +1,20 @@
-#ifndef GRADIEN_C
-#define GRADIEN_C
+// #ifndef GRADIEN_C
+// #define GRADIEN_C
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 
+// #include "../../../header/filter/high_pass/gradient.h"
+// #include "../../struct/matrix.c"
+// #include "../../utilitaire/utilitaire.c"
+// #include "../../convolution/convolution.c"
+// #include "../../segmentation/thresholding.c"
+#include "../../../header/struct/Image.h"
 #include "../../../header/filter/high_pass/gradient.h"
-#include "../../struct/matrix.c"
-#include "../../utilitaire/utilitaire.c"
-#include "../../convolution/convolution.c"
-#include "../../segmentation/thresholding.c"
+#include "../../../header/struct/matrix.h"
+#include "../../../header/utilitaire/utilitaire.h"
+#include "../../../header/convolution/convolution.h"
+#include "../../../header/segmentation/thresholding.h"
 
 Image *robert(Image *image,  int threshold)
 {
@@ -326,4 +332,4 @@ Image *gradient(Image *image, int threshold)
     return image_R;
 }
 
-#endif
+// #endif

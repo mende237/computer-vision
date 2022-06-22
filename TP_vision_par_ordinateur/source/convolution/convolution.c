@@ -1,10 +1,13 @@
-#ifndef CONVOLUTION_C
-#define CONVOLUTION_C
+// #ifndef CONVOLUTION_C
+// #define CONVOLUTION_C
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "../utilitaire/utilitaire.c"
+//#include "../utilitaire/utilitaire.c"
+//#include "../utilitaire/utilitaire.c"
+#include "../../header/struct/matrix.h"
+#include "../../header/utilitaire/utilitaire.h"
 #include "../../header/convolution/convolution.h"
 
 
@@ -48,4 +51,4 @@ Matrix convolution(Matrix Mat, Matrix conv_M , int max_value)
 }
 
 
-#endif
+// #endif

@@ -1,14 +1,19 @@
-#ifndef K_MEANS_C
-#define K_MEANS_C
+// #ifndef K_MEANS_C
+// #define K_MEANS_C
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 
-#include "../data_structure/linked_list.c"
+// #include "../data_structure/linked_list.c"
+// #include "../../header/segmentation/k_means.h"
+// #include "../struct/image.c"
+// #include "../utilitaire/utilitaire.c"
+
+#include "../../header/data_structure/linked_list.h"
 #include "../../header/segmentation/k_means.h"
-#include "../struct/image.c"
-#include "../utilitaire/utilitaire.c"
+#include "../../header/struct/Image.h"
+#include "../../header/utilitaire/utilitaire.h"
 
 struct Point *copy_point(const struct Point *point)
 {
@@ -293,4 +298,4 @@ void free_cluster(List cluster)
     free_list(cluster);
 }
 
-#endif
+// #endif

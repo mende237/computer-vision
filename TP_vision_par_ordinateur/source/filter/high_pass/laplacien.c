@@ -1,8 +1,12 @@
-#ifndef LAPLACIEN_C
-#define LAPLACIEN_C
+// #ifndef LAPLACIEN_C
+// #define LAPLACIEN_C
+// #include "../../../header/filter/high_pass/laplacien.h"
+// #include "../../convolution/convolution.c"
+// #include "../../segmentation/thresholding.c"
+#include "../../../header/struct/Image.h"
 #include "../../../header/filter/high_pass/laplacien.h"
-#include "../../convolution/convolution.c"
-#include "../../segmentation/thresholding.c"
+#include "../../../header/convolution/convolution.h"
+#include "../../../header/segmentation/thresholding.h"
 
 Image *laplacien(Image *image, int threshold){
     Matrix matrix = new_matrix(image->M, image->nbr_line, image->nbr_col);
@@ -45,4 +49,4 @@ Image *laplacien(Image *image, int threshold){
     return image_R;
 }
 
-#endif
+// #endif

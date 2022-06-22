@@ -1,17 +1,16 @@
-#ifndef FILTER_C
-#define FILTER_C
+// #ifndef FILTER_C
+// #define FILTER_C
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "../../convolution/convolution.c"
+#include "../../../header/convolution/convolution.h"
 #include "../../../header/filter/low_pass/low_filter.h"
+#include "../../../header/struct/Image.h"
+#include "../../../header/utilitaire/utilitaire.h"
 
-#include "../../struct/image.c"
-
-
-Image *gaussian_filter(Image *image, int height, int width, float amplitude)
+Image *gaussian_filter(Image *image, int height, int width)
 {
     Matrix M = new_matrix(image->M, image->nbr_line, image->nbr_col);
     int i = 0, j = 0;
@@ -60,7 +59,7 @@ Image *gaussian_filter(Image *image, int height, int width, float amplitude)
     {
         for (j = 0; j < width; j++)
         {
-            conv[i][j] = amplitude * exp(-((pow(i - center_x, 2) / (2 * pow(std_x, 2))) + (pow(j - center_y, 2) / (2 * pow(std_y, 2)))));
+            conv[i][j] = exp(-((pow(i - center_x, 2) / (2 * pow(std_x, 2))) + (pow(j - center_y, 2) / (2 * pow(std_y, 2)))));
             total += conv[i][j];
             printf("%f\t", conv[i][j]);
         }
@@ -150,4 +149,4 @@ Image *median_filter(Image *image, int height, int width)
     Image *image_R = new_image(M_result.M, type, c, max, M_result.nbr_line, M_result.nbr_colonne);
     return image_R;
 }
-#endif
+// #endif

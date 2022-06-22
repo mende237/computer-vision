@@ -1,11 +1,12 @@
-#ifndef UTILITAIRE_C
-#define UTILITAIRE_C
+// #ifndef UTILITAIRE_C
+// #define UTILITAIRE_C
+//#include "../struct/matrix.c"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "../../header/utilitaire/utilitaire.h"
-#include "../struct/matrix.c"
+#include "../../header/struct/matrix.h"
 
 char *comment(char *c)
 {
@@ -62,82 +63,85 @@ int calculate_length_line(FILE *file)
 
 void write_image(char *path, Image *image)
 {
-    FILE *file = fopen(path, "w");
-    if (file == NULL)
-    {
-        printf("le fichier %s n'existe pas\n", path);
-        exit(EXIT_FAILURE);
-    }
+    if(image != NULL){
 
-    fputs(image->type, file);
-    fputc('\n', file);
-    fputs(image->comment, file);
-    fputc('\n', file);
-    fprintf(file, "%d %d\n", image->nbr_col, image->nbr_line);
-    // dans le cas ou il ne s'agit pas d'une image binaire on ercit la valeur max
-    if (strcasecmp(image->type, "P1") != 0)
-        fprintf(file, "%d\n", image->val_max);
-
-    int i = 0, j = 0, cmpt = 0;
-    if (strcmp(image->type, "P1") == 0)
-    {
-
-        int **M = (int **)image->M;
-        for (i = 0; i < image->nbr_line; i++)
+        FILE *file = fopen(path, "w");
+        if (file == NULL)
         {
-            for (j = 0; j < image->nbr_col; j++)
-            {
-                if (cmpt == 70)
-                {
-                    fputc('\n', file);
-                    fputc(bit_to_char(M[i][j]), file);
-                    cmpt = 0;
-                }
-                else
-                {
-                    fputc(bit_to_char(M[i][j]), file);
-                }
-                cmpt++;
-            }
+            printf("le fichier %s n'existe pas\n", path);
+            exit(EXIT_FAILURE);
         }
-    }
-    else if (strcmp(image->type, "P2") == 0)
-    {
-        int **M = (int **)image->M;
-        for (i = 0; i < image->nbr_line; i++)
+
+        fputs(image->type, file);
+        fputc('\n', file);
+        fputs(image->comment, file);
+        fputc('\n', file);
+        fprintf(file, "%d %d\n", image->nbr_col, image->nbr_line);
+        // dans le cas ou il ne s'agit pas d'une image binaire on ercit la valeur max
+        if (strcasecmp(image->type, "P1") != 0)
+            fprintf(file, "%d\n", image->val_max);
+
+        int i = 0, j = 0, cmpt = 0;
+        if (strcmp(image->type, "P1") == 0)
         {
-            for (j = 0; j < image->nbr_col; j++)
+
+            int **M = (int **)image->M;
+            for (i = 0; i < image->nbr_line; i++)
             {
-                if (i == image->nbr_line - 1 && j == image->nbr_col - 1)
+                for (j = 0; j < image->nbr_col; j++)
                 {
-                    fprintf(file, "%d", M[i][j]);
-                }
-                else
-                {
-                    fprintf(file, "%d\n", M[i][j]);
+                    if (cmpt == 70)
+                    {
+                        fputc('\n', file);
+                        fputc(bit_to_char(M[i][j]), file);
+                        cmpt = 0;
+                    }
+                    else
+                    {
+                        fputc(bit_to_char(M[i][j]), file);
+                    }
+                    cmpt++;
                 }
             }
         }
-    }
-    else
-    {
-        Pixel **M = (Pixel **)image->M;
-        for (i = 0; i < image->nbr_line; i++)
+        else if (strcmp(image->type, "P2") == 0)
         {
-            for (j = 0; j < image->nbr_col; j++)
+            int **M = (int **)image->M;
+            for (i = 0; i < image->nbr_line; i++)
             {
-                if (i == image->nbr_line - 1 && j == image->nbr_col - 1)
+                for (j = 0; j < image->nbr_col; j++)
                 {
-                    fprintf(file, "%d\n%d\n%d", M[i][j].r, M[i][j].g, M[i][j].b);
-                }
-                else
-                {
-                    fprintf(file, "%d\n%d\n%d\n", M[i][j].r, M[i][j].g, M[i][j].b);
+                    if (i == image->nbr_line - 1 && j == image->nbr_col - 1)
+                    {
+                        fprintf(file, "%d", M[i][j]);
+                    }
+                    else
+                    {
+                        fprintf(file, "%d\n", M[i][j]);
+                    }
                 }
             }
         }
+        else
+        {
+            Pixel **M = (Pixel **)image->M;
+            for (i = 0; i < image->nbr_line; i++)
+            {
+                for (j = 0; j < image->nbr_col; j++)
+                {
+                    if (i == image->nbr_line - 1 && j == image->nbr_col - 1)
+                    {
+                        fprintf(file, "%d\n%d\n%d", M[i][j].r, M[i][j].g, M[i][j].b);
+                    }
+                    else
+                    {
+                        fprintf(file, "%d\n%d\n%d\n", M[i][j].r, M[i][j].g, M[i][j].b);
+                    }
+                }
+            }
+        }
+        fclose(file);
     }
-    fclose(file);
 }
 
 void read_head(FILE *file, Image *image)
@@ -290,10 +294,19 @@ Image *read_image(char *path)
 }
 
 void free_image(Image *image){
-    free(image->comment);
-    free(image->type);
-    int i = 0, j = 0;
-    free(image->M);
+    if(image != NULL){
+        free(image->comment);
+        free(image->type);
+        int i = 0, j = 0;
+        if(strcmp(image->type , "P1") == 0 || strcmp(image->type , "P2") == 0){
+            int **M = image->M;
+            for (i = 0; i < image->nbr_line; i++)
+            {
+                free(M[i]);
+            }
+            free(image->M);
+        }
+    }
 }
 
 int select_max_matrix(Matrix Mat){
@@ -341,4 +354,20 @@ boolean equal_point(void *val1, void *val2, ...)
     return False;
 }
 
-#endif
+struct Tuple *new_tuple(void *a, void *b){
+    typedef struct Tuple Tuple;
+    Tuple *tuple = calloc(1 , sizeof(Tuple));
+    tuple->a = a;
+    tuple->b = b;
+    return tuple;
+}
+
+void free_tuple(struct Tuple *tuple , int free_inner){
+    if(free_inner == 1){
+        free(tuple->a);
+        free(tuple->b);
+    }
+    free(tuple);
+}
+
+// #endif

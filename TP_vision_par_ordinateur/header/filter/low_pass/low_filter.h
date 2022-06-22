@@ -1,9 +1,9 @@
-#ifndef LOW_FILTER_X
-#define LOW_FILTER_X
+#ifndef LOW_FILTER_H
+#define LOW_FILTER_H
 
 #include "../../struct/Image.h"
 
-Image *gaussian_filter(Image *image, int height, int width, float amplitude);
+Image *gaussian_filter(Image *image, int height, int width);
 
 Image *averaging_filter(Image *image, int height, int width);
 

@@ -23,5 +23,6 @@ int compare(const void *a, const void *b);
 // creation d'un point
 struct Point *new_Point(int x, int y, int color);
 boolean equal_point(void *val1, void *val2, ...);
-
+struct Tuple *new_tuple(void *a, void *b);
+void free_tuple(struct Tuple *tuple , int free_inner);
 #endif

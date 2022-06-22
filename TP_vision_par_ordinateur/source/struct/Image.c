@@ -1,5 +1,5 @@
-#ifndef IMAGE_C
-#define IMAGE_C
+// #ifndef IMAGE_C
+// #define IMAGE_C
 #include "../../header/struct/Image.h"
 
 Image *new_image(void *M , char *type , char* comment , int max_value , int nbr_line , int nbr_col){
@@ -13,4 +13,4 @@ Image *new_image(void *M , char *type , char* comment , int max_value , int nbr_
     return image;
 }
 
-#endif
+//#endif

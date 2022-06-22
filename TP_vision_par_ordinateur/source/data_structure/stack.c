@@ -1,5 +1,5 @@
-#ifndef STACK_C
-#define STACK_C
+// #ifndef STACK_C
+// #define STACK_C
 
 #include "../../header/data_structure/stack.h"
 #include <stdlib.h>
@@ -68,4 +68,4 @@ void free_stack(Stack stk){
     free(stk);
 }
 
-#endif 
+// #endif 

@@ -1,9 +1,14 @@
-#ifndef GERM_C
-#define GERM_C
+// #ifndef GERM_C
+// #define GERM_C
+#include <string.h>
 #include "../../header/segmentation/germ.h"
-#include "../data_structure/linked_list.c"
-#include "../data_structure/stack.c"
-#include "../utilitaire/utilitaire.c"
+// #include "../data_structure/linked_list.c"
+// #include "../data_structure/stack.c"
+// #include "../utilitaire/utilitaire.c"
+
+#include "../../header/data_structure/linked_list.h"
+#include "../../header/data_structure/stack.h"
+#include "../../header/utilitaire/utilitaire.h"
 
 Image *germ(Image *image, int nbr_germ, int threshold)
 {
@@ -104,4 +109,4 @@ List spread_germ(struct Point *point , Image *image , int threshold)
     return germs;
 }
 
-#endif
+// #endif

@@ -9,7 +9,10 @@ Image *linear_transformation(Image *image, int min, int max);
 int equal_pixel(void *p1, void *p2, char *image_type);
 int pixel_content(int *hist, int val);
 Image *add_PGM_images(Image *image1, Image *image2);
-Image *multiplication_PGM_images(Image *image1, Image *image2);
-float contraste(Image *image);
+Image *multiplication_PGM_images(Image *image1, int coef);
+Image *and (const Image *image1, const Image *image2);
+Image *or (const Image *image1, const Image *image2);
+Image *not(const Image *image);
+float contraste(Image * image);
 float contraste_matrix(Matrix M);
 #endif

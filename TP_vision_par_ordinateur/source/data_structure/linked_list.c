@@ -1,5 +1,5 @@
-#ifndef LINKED_LIST_c
-#define LINKED_LIST_c
+// #ifndef LINKED_LIST_c
+// #define LINKED_LIST_c
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -265,4 +265,4 @@ void free_list(List li)
     }
 }
 
-#endif
+// #endif

@@ -26,4 +26,9 @@ struct Point
     int color;
 };
 
+struct Tuple{
+    void *a;
+    void *b;
+};
+
 #endif
