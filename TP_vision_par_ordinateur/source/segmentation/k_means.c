@@ -172,7 +172,6 @@ List *initialise(int **M , int nbr_line , int nbr_col , struct Point **center_ta
 
 Image *k_means(Image *image, int nbr_cluster)
 {
-    printf("\nenter!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
     typedef struct Point Point;
     int i = 0, x = 0, y = 0, color , j = 0;
     int **M = (int **)image->M;

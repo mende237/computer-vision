@@ -12,7 +12,7 @@
 
 Image *gaussian_filter(Image *image, int height, int width)
 {
-    Matrix M = new_matrix(image->M, image->nbr_line, image->nbr_col);
+    Matrix *M = new_matrix(image->M, image->nbr_line, image->nbr_col);
     int i = 0, j = 0;
     float **conv = new_float_matrix(height, width);
     float std_x = 0;
@@ -71,22 +71,22 @@ Image *gaussian_filter(Image *image, int height, int width)
             conv[i][j] = conv[i][j] / total;
 
     // int **test_M = image->M;
-    Matrix conv_M = new_matrix(conv, height, width);
-    Matrix M_result = convolution(M, conv_M , image->val_max);
+    Matrix *conv_M = new_matrix(conv, height, width);
+    Matrix *M_result = convolution(M, conv_M , image->val_max);
 
     // int max = select_max_matrix(M_result);
     int max = 255;
     char *c = comment("dimitri");
     char *type = calloc(strlen(image->type), sizeof(char));
     strcpy(type, image->type);
-    Image *image_R = new_image(M_result.M, type, c, max, M_result.nbr_line, M_result.nbr_colonne);
+    Image *image_R = new_image(M_result->M, type, c, max, M_result->nbr_line, M_result->nbr_colonne);
     free_matrix(conv_M, 1);
     return image_R;
 }
 
 Image *averaging_filter(Image *image, int height, int width)
 {
-    Matrix M = new_matrix(image->M, image->nbr_line, image->nbr_col);
+    Matrix *M = new_matrix(image->M, image->nbr_line, image->nbr_col);
     int i = 0, j = 0;
     float **conv = new_float_matrix(height, width);
     int total = height * width;
@@ -98,14 +98,14 @@ Image *averaging_filter(Image *image, int height, int width)
         }
     }
     // int **test_M = image->M;
-    Matrix conv_M = new_matrix(conv, height, width);
-    Matrix M_result = convolution(M, conv_M , image->val_max);
+    Matrix *conv_M = new_matrix(conv, height, width);
+    Matrix *M_result = convolution(M, conv_M , image->val_max);
     // int max = select_max_matrix(M_result);
     int max = 255;
     char *c = comment("dimitri");
     char *type = calloc(strlen(image->type), sizeof(char));
     strcpy(type, image->type);
-    Image *image_R = new_image(M_result.M, type, c, max, M_result.nbr_line, M_result.nbr_colonne);
+    Image *image_R = new_image(M_result->M, type, c, max, M_result->nbr_line, M_result->nbr_colonne);
     return image_R;
 }
 
@@ -147,14 +147,14 @@ Image *median_filter(Image *image, int height, int width)
             free(temp);
         }
     }
-    Matrix M_result = new_matrix(M, image->nbr_line, image->nbr_col);
+    Matrix *M_result = new_matrix(M, image->nbr_line, image->nbr_col);
 
     // int max = select_max_matrix(M_result);
     int max = 255;
     char *c = comment("dimitri");
     char *type = calloc(strlen(image->type), sizeof(char));
     strcpy(type, image->type);
-    Image *image_R = new_image(M_result.M, type, c, max, M_result.nbr_line, M_result.nbr_colonne);
+    Image *image_R = new_image(M_result->M, type, c, max, M_result->nbr_line, M_result->nbr_colonne);
     return image_R;
 }
 // #endif

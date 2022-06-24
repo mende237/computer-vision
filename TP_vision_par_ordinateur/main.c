@@ -14,12 +14,106 @@
 #include "header/base_operations/operations.h"
 #include "header/segmentation/thresholding.h"
 #include "header/struct/Image.h"
+#include "header/data_structure/linked_list.h"
 
+
+const char *SOFTWARE_NAME = "eog";
 
 void handle_args(int argc, char *argv[]);
 void handle_error_type_image(Image *image, char *operation);
 int handle_convert_error(char *nbr, char *operation);
+Image *handle_multi_thresholding(Image *image, char *threshold_tab, char *threshold_value, char *path_source);
+void load_help();
 int is_zero(char *nbr);
+List splite(char *ch, char *delim);
+void remove_char(char *str, int pos);
+
+
+void remove_char(char *str, int pos)
+{
+    int x = 0;
+    while (str[x] != '\0')
+    {
+        if (x >= pos)
+        {
+            str[x] = str[x + 1];
+        }
+        x++;
+    }
+}
+
+List splite(char *ch , char *delim){
+    char *str = calloc(strlen(ch) , sizeof(char));
+    strcpy(str , ch);
+    char *ptr = strtok(str, delim);
+
+    List tokens = new_list();
+    while (ptr != NULL)
+    {
+        queue_insertion(tokens , ptr);
+        ptr = strtok(NULL, delim);
+    }
+
+    return tokens;
+}
+
+Image* handle_multi_thresholding(Image *image , char *threshold_ch, char *value_ch, char *path_source)
+{
+    //suppression des crochets
+    remove_char(threshold_ch, 0);
+    remove_char(threshold_ch, strlen(threshold_ch) - 1);
+
+    remove_char(value_ch, 0);
+    remove_char(value_ch, strlen(value_ch) - 1);
+    List threshold_list = splite(threshold_ch , ",");
+    List value_list = splite(value_ch , ",");
+    int error = 0;
+    if(threshold_list->length != value_list->length - 1){
+        load_help();
+        error = 1;
+        goto END;
+    }
+
+    int *threshold_tab = calloc(threshold_list->length , sizeof(int));
+    int *value_tab = calloc(value_list->length , sizeof(int));
+
+
+    int i = 0;
+    
+    for (i = 0; i < threshold_list->length; i++)
+    {
+        threshold_tab[i] = handle_convert_error((char*) get_element_list(threshold_list , i) , "SM");
+    }
+
+    for (i = 0; i < threshold_list->length; i++)
+    {
+        value_tab[i] = handle_convert_error((char *)get_element_list(threshold_list, i) , "SM");
+    }
+
+    i = 0;
+    while (threshold_tab[i] < threshold_tab[i + 1] && i < threshold_list->length - 1)
+        i++;
+
+    if (i != threshold_list->length - 1){
+        free(threshold_tab);
+        free(value_tab);
+        load_help();
+        error = 1;
+        goto END;
+    }
+
+    int nbr_threshold = threshold_list->length;
+END:    
+    free_list(threshold_list);
+    free_list(value_list);
+    if(error == 1)
+        exit(EXIT_FAILURE);
+
+    Image *image_R = multi_thresholding(image, threshold_tab, value_tab, nbr_threshold);
+    free(threshold_tab);
+    free(value_tab);
+    return image_R;
+}
 
 int is_zero(char *nbr)
 {
@@ -31,7 +125,6 @@ int is_zero(char *nbr)
     }
     return 1;
 }
-void load_help();
 
 void load_help()
 {
@@ -54,8 +147,7 @@ int handle_convert_error(char *nbr, char *operation)
             exit(EXIT_FAILURE);
         }
     }
-    else if (strcmp(operation, "GE") == 0 || strcmp(operation, "K") == 0 || strcmp(operation, "G") == 0 || strcmp(operation, "S") == 0 ||
-             strcmp(operation, "R") == 0 || strcmp(operation, "P") == 0 || strcmp(operation, "L") == 0)
+    else if (strcmp(operation, "GE") == 0 || strcmp(operation, "K") == 0)
     {
         if (r > 0)
         {
@@ -65,7 +157,22 @@ int handle_convert_error(char *nbr, char *operation)
         load_help();
         exit(EXIT_FAILURE);
     }
-    else if (strcmp(operation, "LT") == 0)
+    else if (strcmp(operation, "G") == 0 || strcmp(operation, "S") == 0 || strcmp(operation, "R") == 0 || strcmp(operation, "P") == 0 ||
+             strcmp(operation, "L") == 0 || strcmp(operation, "SE") == 0)
+    {
+        if (strcmp(nbr, "-A") == 0)
+        {
+            // seuillage automatique
+            return -1;
+        }
+        else if (is_zero(nbr) == 1 || r != 0)
+        {
+            return r;
+        }
+        load_help();
+        exit(EXIT_FAILURE);
+    }
+    else if (strcmp(operation, "LT") == 0 || strcmp(operation, "SM") == 0)
     {
         if (is_zero(nbr) == 1 || r != 0)
         {
@@ -116,43 +223,43 @@ void handle_args(int argc, char *argv[])
         handle_error_type_image(image, "");
         if (strcmp(argv[1], "-G") == 0)
         {
-            image_R = gradient(image, -1);
+            image_R = gradient(image, -2);
             write_image(argv[3], image_R);
             printf("enter gradient\n");
         }
         // sobel
         else if (strcmp(argv[1], "-S") == 0)
         {
-            image_R = sobel(image, -1);
+            image_R = sobel(image, -2);
             write_image(argv[3], image_R);
             printf("enter sobel\n");
         }
         // robert
         else if (strcmp(argv[1], "-R") == 0)
         {
-            image_R = robert(image, -1);
+            image_R = robert(image, -2);
             write_image(argv[3], image_R);
             printf("enter sobel\n");
         }
         // prewitt
         else if (strcmp(argv[1], "-P") == 0)
         {
-            image_R = prewit(image, -1);
+            image_R = prewit(image, -2);
             write_image(argv[3], image_R);
             printf("enter sobel\n");
         }
         // laplacien
         else if (strcmp(argv[1], "-S") == 0)
         {
-            image_R = sobel(image, -1);
+            image_R = sobel(image, -2);
             write_image(argv[3], image_R);
             printf("enter sobel\n");
         }
         else if (strcmp(argv[1], "-L") == 0)
         {
-            image_R = laplacien(image, -1);
+            image_R = laplacien(image, -2);
             write_image(argv[3], image_R);
-            printf("enter sobel\n");
+            printf("enter laplacien\n");
         }
         // egalisation d'histigramme
         else if (strcmp(argv[1], "-EH") == 0)
@@ -173,13 +280,26 @@ void handle_args(int argc, char *argv[])
             write_image(argv[3], image_R);
             printf("linear transformation\n");
         }
+        // l'operateur AND
+        else if (strcmp(argv[1], "-A") == 0)
+        {
+        }
+        // l'operateur OR
+        else if (strcmp(argv[1], "-O") == 0)
+        {
+        }
         else
         {
             load_help();
             exit(EXIT_FAILURE);
         }
         free_image(image);
-        free_image(image_R);
+
+        if (strcmp(argv[1], "-C") != 0)
+        {
+            print_image(SOFTWARE_NAME, argv[3]);
+            free_image(image_R);
+        }
     }
     else if (argc == 5)
     {
@@ -193,7 +313,7 @@ void handle_args(int argc, char *argv[])
             threshold = handle_convert_error(argv[2], "G");
             image_R = gradient(image, threshold);
             write_image(argv[4], image_R);
-            printf("enter gradient\n");
+            printf("enter gradient seuilage \n");
         }
         // sobel avec seuillage
         else if (strcmp(argv[1], "-S") == 0)
@@ -201,29 +321,29 @@ void handle_args(int argc, char *argv[])
             image = read_image(argv[3]);
             handle_error_type_image(image, "G");
             threshold = handle_convert_error(argv[2], "G");
+            printf("enter sobel seuillage \n");
             image_R = sobel(image, threshold);
             write_image(argv[4], image_R);
-            printf("enter gradient\n");
         }
         // robert avec seuillage
         else if (strcmp(argv[1], "-R") == 0)
         {
             image = read_image(argv[3]);
-            handle_error_type_image(image, "G");
-            threshold = handle_convert_error(argv[2], "G");
+            handle_error_type_image(image, "R");
+            threshold = handle_convert_error(argv[2], "R");
             image_R = robert(image, threshold);
             write_image(argv[4], image_R);
-            printf("enter gradient\n");
+            printf("enter robert\n");
         }
         // prewitt avec seuillage
         else if (strcmp(argv[1], "-P") == 0)
         {
             image = read_image(argv[3]);
-            handle_error_type_image(image, "G");
-            threshold = handle_convert_error(argv[2], "G");
+            handle_error_type_image(image, "P");
+            threshold = handle_convert_error(argv[2], "P");
             image_R = prewit(image, threshold);
             write_image(argv[4], image_R);
-            printf("enter gradient\n");
+            printf("enter prewitt\n");
         }
         // laplacien avec seuillage
         else if (strcmp(argv[1], "-L") == 0)
@@ -235,13 +355,23 @@ void handle_args(int argc, char *argv[])
             write_image(argv[4], image_R);
             printf("enter gradient\n");
         }
-        // l'operateur AND
-        else if (strcmp(argv[1], "-A") == 0)
+        // seuillage
+        else if (strcmp(argv[1], "-SE") == 0)
         {
-        }
-        // l'operateur OR
-        else if (strcmp(argv[1], "-O") == 0)
-        {
+            printf("enter seuillage\n");
+            image = read_image(argv[3]);
+            handle_error_type_image(image, "SE");
+            threshold = handle_convert_error(argv[2], "SE");
+            if (threshold < 0)
+            {
+                // seuillage automatique
+                image_R = thresholding(image, 1, 0);
+            }
+            else
+            {
+                image_R = thresholding(image, 0, threshold);
+            }
+            write_image(argv[4], image_R);
         }
         // convolution
         else if (strcmp(argv[1], "-CV") == 0)
@@ -262,6 +392,10 @@ void handle_args(int argc, char *argv[])
             load_help();
             exit(EXIT_FAILURE);
         }
+
+        print_image(SOFTWARE_NAME, argv[4]);
+        free_image(image);
+        free_image(image_R);
     }
     else if (argc == 6)
     {
@@ -328,11 +462,20 @@ void handle_args(int argc, char *argv[])
             write_image(argv[5], image_R);
             printf("germ\n");
         }
+        else if (strcmp(argv[1], "-SM") == 0)
+        {
+            image = read_image(argv[4]);
+            handle_error_type_image(image, "SM");
+            image_R = handle_multi_thresholding(image , argv[2] , argv[3] , argv[4]);
+            write_image(argv[5], image_R);
+            printf("seuillage multiple\n");
+        }
         else
         {
             load_help();
             exit(EXIT_FAILURE);
         }
+        print_image(SOFTWARE_NAME, argv[5]);
         free_image(image);
         free_image(image_R);
     }
@@ -343,24 +486,34 @@ void handle_args(int argc, char *argv[])
     }
 }
 
-
-
 int main(int argc, char *argv[])
 {
-    // handle_args(argc, argv);
-    // exit(EXIT_SUCCESS);
-    int a = atoi("aqdqsd");
-    printf("%d\n", a);
+    // int i = 0;
+    // char *str = calloc(strlen("strtok needs to be called several times to split a string") ,sizeof(char));
+    // strcpy(str, "strtok needs to be called several times to split a string");
+    // List list = splite(str, " ");
+    // free(str);
+    // for (i = 0; i < list->length; i++)
+    // {
+    //     printf("%s\n" , (char*) get_element_list(list , i));
+    //     free(get_element_list(list, i));
+    // }
+    
+    handle_args(argc, argv);
+    exit(EXIT_SUCCESS);
+
+    // int a = atoi("aqdqsd");
+    // printf("%d\n", a);
     // int i = 0, j = 0;
     // Image *image1 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
-    Image *image_test = read_image("empreinte.pgm");
+    Image *image_test = read_image("oiseau.pgm");
     // Image *image2 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
     // Image *image = add_PGM_images(image1, image2);
     Image *image_R;
 
     //image_R = equal_histogram(image_test);
-    int threshold = otsu(image_test);
-    printf("le seuil est %d\n" , threshold);
+    // int threshold = otsu(image_test);
+    // printf("le seuil est %d\n" , threshold);
     // // Matrix M = new_matrix(image1->M , image1->nbr_line , image1->nbr_col);
     // // int** conv = new_int_matrix(3 , 3);
     // // Matrix conv_M = new_matrix(conv , 3 , 3);
@@ -372,7 +525,11 @@ int main(int argc, char *argv[])
     // // image_R = germ(image_test, 7 , 25);
     // // image_R = median_filter(image_test , 3 , 3);
     // //image_R = voting_image(image_test, 0.1, "laplacien");
-    //image_R = laplacien(image_test , -1);
+
+    //image_R = laplacien(image_test, -1);
+    char threshold_ch[] = "[50]";
+    char val[] = "[0,1]";
+    image_R = handle_multi_thresholding(image_test , threshold_ch , val , "oiseau.pgm");
     ////image_R = equal_histogram(image_test);
     // //  int a = 10 , b = 15;
     // //  struct Tuple *tuple = new_tuple(&a , &b);
@@ -402,11 +559,11 @@ int main(int argc, char *argv[])
     // // printf("cal = %d , reel = %d\n" , r , image1->nbr_line * image1->nbr_col);
     // // free_matrix(M , 0);
     // // free_matrix(conv_M , 1);
-    //write_image("result/result.pgm", image_R);
+    write_image("result/result.pgm", image_R);
     free_image(image_test);
     // free_image(image2);
     // free_image(image);
-    //free_image(image_R);
+    free_image(image_R);
     // printf("%d", strlen("1111111111111111111111111111111111111111111111111111111111111111111111"));
     return EXIT_SUCCESS;
 }

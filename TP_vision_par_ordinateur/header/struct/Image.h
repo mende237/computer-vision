@@ -10,5 +10,5 @@ typedef struct Image
     void *M;
 }Image;
 
-Image* new_image();
+Image *new_image(void *M, char *type, char *comment, int max_value, int nbr_line, int nbr_col);
 #endif

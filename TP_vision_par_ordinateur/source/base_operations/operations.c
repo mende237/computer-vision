@@ -101,14 +101,14 @@ void *histogram(Image *image)
         {
             for (j = 0; j < image->nbr_col; j++)
             {
-                if (pixel_content(temp_hist, M[i][j]) == 1)
-                {
-                    temp_hist[M[i][j]] += 1;
-                }
-                else
-                {
-                    temp_hist[M[i][j]] = 1;
-                }
+                temp_hist[M[i][j]] += 1;
+                // if (pixel_content(temp_hist, M[i][j]) == 1)
+                // {
+                // }
+                // else
+                // {
+                //     temp_hist[M[i][j]] = 1;
+                // }
             }
         }
         hist = temp_hist;
@@ -121,29 +121,37 @@ void *histogram(Image *image)
         {
             for (j = 0; j < image->nbr_col; j++)
             {
-                if (pixel_content(temp_hist, M[i][j]) == 1)
-                {
-                    temp_hist[M[i][j]] += 1;
-                }
-                else
-                {
-                    temp_hist[M[i][j]] = 1;
-                }
+                temp_hist[M[i][j]] += 1;
+                // if (pixel_content(temp_hist, M[i][j]) == 1)
+                // {
+                // }
+                // else
+                // {
+                //     temp_hist[M[i][j]] = 1;
+                // }
             }
         }
+
         hist = temp_hist;
+        // for (i = 0; i < 256; i++)
+        // {
+        //     printf("%d\n" , temp_hist[i]);
+        // }
+        
     }
     else
     {
     }
+    return hist;
 }
 
 float *normalise_histogram(int *hist , int nbr_pixel){
     int i = 0;
-    float *hist_norm = calloc(256 , sizeof(float));
+    float *hist_norm = (float*) calloc(256 , sizeof(float));
+    
     for (i = 0; i < 256; i++)
     {
-        hist_norm[i] = (float)hist[i] / nbr_pixel;
+        hist_norm[i] = (float) hist[i] / nbr_pixel;
     }
     return hist_norm;
 }
@@ -242,6 +250,7 @@ Image *add_PGM_images(Image *image1, Image *image2)
 
 Image * and (const Image *image1, const Image *image2)
 {
+    
 }
 
 Image * or (const Image *image1, const Image *image2)

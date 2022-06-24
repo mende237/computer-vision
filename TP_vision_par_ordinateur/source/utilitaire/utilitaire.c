@@ -348,6 +348,14 @@ boolean equal_point(void *val1, void *val2, ...)
     return False;
 }
 
+void print_image(char *software_name , char *path){
+    char *ch = calloc(strlen(software_name) + strlen(path) + 2, sizeof(char));
+    strcpy(ch , software_name);
+    strcat(ch , " ");
+    strcat(ch , path);
+    system(ch);
+}
+
 struct Tuple *new_tuple(void *a, void *b){
     typedef struct Tuple Tuple;
     Tuple *tuple = calloc(1 , sizeof(Tuple));

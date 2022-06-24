@@ -1,7 +1,7 @@
 CC = /usr/bin/gcc-9
 all:final
 
-final:main.o gradient.o k_means.o germ.o low_filter.o hough_transformation.o laplacien.o operations.o utilitaire.o operations.o image.o low_filter.o thresholding.o
+final:main.o gradient.o k_means.o germ.o low_filter.o hough_transformation.o laplacien.o operations.o utilitaire.o operations.o image.o low_filter.o thresholding.o linked_list.o
 	$(CC) -g main.o utilitaire.o gradient.o matrix.o operations.o  thresholding.o k_means.o germ.o laplacien.o low_filter.o convolution.o linked_list.o stack.o image.o -lm -o main
 
 main.o:main.c 
@@ -40,7 +40,7 @@ gradient.o: source/filter/high_pass/gradient.c thresholding.o convolution.o matr
 
 # gradient.h:header/filter/high_pass/gradient.h header/struct/Image.h header/struct/matrix.h 
 
-laplacien.o: source/filter/high_pass/laplacien.c thresholding.o convolution.o image.o matrix.o header/filter/high_pass/laplacien.h   
+laplacien.o: source/filter/high_pass/laplacien.c thresholding.o convolution.o image.o matrix.o utilitaire.o header/filter/high_pass/laplacien.h   
 	$(CC) -g -c -w source/filter/high_pass/laplacien.c -o laplacien.o
 
 # laplacien.h: header/filter/high_pass/laplacien.h header/struct/Image.h header/struct/matrix.h 

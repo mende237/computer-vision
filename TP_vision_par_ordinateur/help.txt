@@ -1,0 +1,94 @@
+OPERATION
+    ADDITION
+        [-AD] chemin_vers_le_fichier_source1 chemin_vers_le_fichier_source2 chemin_vers_la_sorti
+        exemple -AD ./source1.pgm ./source2.pgm ./dest.pgm
+    MUTIPLICATION
+        [-M] chemin_vers_le_fichier_source1 coefficient chemin_vers_la_sorti
+        exemple -M ./source1.pgm 2 ./dest.pgm
+    
+
+CONVOLUTION
+    [-CV] chemin_vers_le_fichier_source chemin_fichier_contenant_la_matrice chemin_vers_la_sorti
+    exemple -CV ./source.pgm matrice.txt ./dest.pgm
+
+FILTRE PASS HAUT
+    GRADIEN
+        [-G] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -G ./source.pgm ./dest.pgm
+        il est aussi possible d'effectuer un seuillage
+        [-G] valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -G 50 ./source.pgm ./dest.pbm
+        il est aussi possible de faire un seuillage automatique en utilisant 
+        [-G] [-A] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -G -A ./source.pgm ./dest.pbm
+    ROBERT
+        [-R] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -R ./source.pgm ./dest.pgm
+        il est aussi possible d'effectuer un seuillage
+        [-R] valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -R 50 ./source.pgm ./dest.pbm
+        il est aussi possible de faire un seuillage automatique en utilisant 
+        [-R] [-A] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -R -A ./source.pgm ./dest.pbm
+    SOBEL
+        [-S] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -S ./source.pgm ./dest.pgm
+        il est aussi possible d'effectuer un seuillage
+        [-S] valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -S 50 ./source.pgm ./dest.pbm
+        il est aussi possible de faire un seuillage automatique en utilisant 
+        [-S] [-A] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -S -A ./source.pgm ./dest.pbm
+    PREWIT
+        [-P] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -P ./source.pgm ./dest.pgm
+        il est aussi possible d'effectuer un seuillage
+        [-P] valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -P 50 ./source.pgm ./dest.pbm
+        il est aussi possible de faire un seuillage automatique en utilisant 
+        [-P] [-A] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -P -A ./source.pgm ./dest.pbm
+    LAPLACIEN
+        [-L] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -L ./source.pgm ./dest.pgm
+        il est aussi possible d'effectuer un seuillage
+        [-L] valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -L 50 ./source.pgm ./dest.pbm
+        il est aussi possible de faire un seuillage automatique en utilisant 
+        [-L] [-A] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -L -A ./source.pgm ./dest.pbm
+
+FILTRE PASS BAS
+    FILTRE MOYENNEUR
+        [-FMO] taille_du_filtre chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -FMO 5 5 ./source.pgm ./dest.pgm
+    FILTRE GUASSIEN
+        [-FG] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -FG 5 5 ./source.pgm ./dest.pgm
+    FILTRE MEDIAN
+        [-FM] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -FM 5 5./source.pgm ./dest.pgm
+    NB:les dimensions des filtres doivent etre impaires
+
+SEGMENTATION
+    K-MEANS
+        [-K] nombre_cluster chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -K 5 ./source.pgm ./dest.pgm
+    GERM
+        [-GE] nombre_germ valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -GE 5 10 ./source.pgm ./dest.pgm
+    SEUILLAGE 
+        [-SE] valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -SE 5 ./source.pgm ./dest.pgm
+    SEUILLAGE MULTIPLE
+        [-SM] tableau_de_seuils tableau_de_valeurs chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -SM [20,100] [0,50,60]./source.pgm ./dest.pgm
+        cette commande peut s'interpreter comme tout pixel p ayant pour colour x 
+        si x <= 20 on affecte la valeur 0
+        sinon si 20 < x <= 100 on affecte la valeur 50
+        sinon on affecte la valeur 60
+        NB:le tableau des seuils doit etre rangé dans l'ordre croissant et sa taille doit toujours
+        etre egale a celle des valeur moins un 
+
+TRANSFORMATION
+    HOUGH
