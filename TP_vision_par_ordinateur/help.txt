@@ -1,15 +1,27 @@
 OPERATION
     ADDITION
-        [-AD] chemin_vers_le_fichier_source1 chemin_vers_le_fichier_source2 chemin_vers_la_sorti
-        exemple -AD ./source1.pgm ./source2.pgm ./dest.pgm
+        [-ADD] chemin_vers_le_fichier_source1 chemin_vers_le_fichier_source2 chemin_vers_la_sorti
+        exemple -ADD ./source1.pgm ./source2.pgm ./dest.pgm
     MUTIPLICATION
-        [-M] chemin_vers_le_fichier_source1 coefficient chemin_vers_la_sorti
+        [-M] coefficient chemin_vers_le_fichier_source1 chemin_vers_la_sorti
         exemple -M ./source1.pgm 2 ./dest.pgm
-    
+    ET LOGIQUE
+        [-AND] chemin_vers_le_fichier_source1 chemin_vers_le_fichier_source2 chemin_vers_la_sorti
+        exemple -AND ./source1.pgm ./source2.pgm ./dest.pbm
+    OU LOGIQUE
+        [-OR] chemin_vers_le_fichier_source1 chemin_vers_le_fichier_source2 chemin_vers_la_sorti
+        exemple -OR ./source1.pgm ./source2.pgm ./dest.pbm
+    NOT
+        [-NOT] chemin_vers_le_fichier_source1 chemin_vers_la_sorti
+        exemple -NOT ./source1.pgm  ./dest.pbm
+    INTERPOLATION
+        [-I] chemin_vers_le_fichier_source1 chemin_vers_la_sorti
+        exemple -I ./source1.pgm  ./dest.pbm
 
 CONVOLUTION
     [-CV] chemin_vers_le_fichier_source chemin_fichier_contenant_la_matrice chemin_vers_la_sorti
     exemple -CV ./source.pgm matrice.txt ./dest.pgm
+
 
 FILTRE PASS HAUT
     GRADIEN
@@ -67,7 +79,7 @@ FILTRE PASS BAS
         exemple -FG 5 5 ./source.pgm ./dest.pgm
     FILTRE MEDIAN
         [-FM] chemin_vers_le_fichier_source chemin_vers_la_sorti
-        exemple -FM 5 5./source.pgm ./dest.pgm
+        exemple -FM 5 5 ./source.pgm ./dest.pgm
     NB:les dimensions des filtres doivent etre impaires
 
 SEGMENTATION
@@ -81,10 +93,10 @@ SEGMENTATION
         exemple -GE 5 10 ./source.pgm ./dest.pgm
     SEUILLAGE 
         [-SE] valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
-        exemple -SE 5 ./source.pgm ./dest.pgm
+        exemple -SE 5 ./source.pgm ./dest.pbm
         il est aussi possible de faire un seuillage automatique en utilisant 
         [-SE] -A chemin_vers_le_fichier_source chemin_vers_la_sorti
-         exemple -SE -A ./source.pgm ./dest.pgm
+         exemple -SE -A ./source.pgm ./dest.pbm
     SEUILLAGE MULTIPLE
         [-SM] tableau_de_seuils tableau_de_valeurs chemin_vers_le_fichier_source chemin_vers_la_sorti
         exemple -SM [20,100] [0,50,60] ./source.pgm ./dest.pgm
@@ -96,4 +108,5 @@ SEGMENTATION
         etre egale a celle des valeur moins un 
 
 TRANSFORMATION
+
     HOUGH

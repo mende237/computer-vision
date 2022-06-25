@@ -68,7 +68,7 @@ Image *linear_transformation(Image *image, int min, int max)
         {
             for (j = 0; j < image->nbr_col; j++)
             {
-                M[i][j] = (LUT[matrice[i][j]] < 0) ? 0 : LUT[matrice[i][j]];
+                M[i][j] = (LUT[matrice[i][j]] < 0) ? 0 : (LUT[matrice[i][j]] > 255) ? 255 : LUT[matrice[i][j]];
             }
         }
         image_R->M = M;
@@ -82,7 +82,7 @@ Image *linear_transformation(Image *image, int min, int max)
     strcpy(type, image->type);
     image_R->type = type;
     image_R->comment = c;
-    image_R->val_max = image->val_max;
+    image_R->val_max = 255;
     image_R->nbr_line = image->nbr_line;
     image_R->nbr_col = image->nbr_col;
     // Image *image_R = new_image(M, type, c, max, image1->nbr_line, image1->nbr_col);
@@ -219,17 +219,14 @@ Image *add_PGM_images(Image *image1, Image *image2)
         int **M1 = (int **)image1->M;
         int **M2 = (int **)image2->M;
 
-        int max = (image1->val_max < image2->val_max) ? image2->val_max : image1->val_max;
+       
         int val = 0;
         for (i = 0; i < image1->nbr_line; i++)
         {
             for (j = 0; j < image1->nbr_col; j++)
             {
                 val = M1[i][j] + M2[i][j];
-                if (val > max)
-                    M[i][j] = max;
-                else
-                    M[i][j] = val;
+                M[i][j] = (val < 0) ? 0 : (val > 255) ? 255: val;
             }
         }
 
@@ -243,26 +240,98 @@ Image *add_PGM_images(Image *image1, Image *image2)
         // image->nbr_line = image1->nbr_line;
         // image->nbr_col = image1->nbr_col;
         // image->M = M;
-        Image *image = new_image(M, type, c, max, image1->nbr_line, image1->nbr_col);
+        Image *image = new_image(M, type, c, 255 , image1->nbr_line, image1->nbr_col);
         return image;
     }
 }
 
 Image * and (const Image *image1, const Image *image2)
 {
-    
+    int i = 0, j = 0;
+    int **M = new_int_matrix(image1->nbr_line , image2->nbr_col);
+    int **M1 = (int **)image1->M;
+    int **M2 = (int **)image2->M;
+
+    for (i = 0; i < image1->nbr_line; i++)
+    {
+        for (j = 0; j < image1->nbr_col; j++)
+        {
+            M[i][j] = (M1[i][j] == 0 || M2[i][j] == 0) ? 0 : 1;
+        }
+    }
+
+    char *c = comment("dimitri");
+    char *type = calloc(strlen(image1->type), sizeof(char));
+    strcpy(type, image1->type);
+
+    Image *image = new_image(M, type, c, 255, image1->nbr_line, image1->nbr_col);
+    return image;
 }
 
 Image * or (const Image *image1, const Image *image2)
 {
+    int i = 0, j = 0;
+    int **M = new_int_matrix(image1->nbr_line, image2->nbr_col);
+    int **M1 = (int **)image1->M;
+    int **M2 = (int **)image2->M;
+
+    for (i = 0; i < image1->nbr_line; i++)
+    {
+        for (j = 0; j < image1->nbr_col; j++)
+        {
+            M[i][j] = (M1[i][j] >= 1 || M2[i][j] >= 1) ? 1 : 0;
+        }
+    }
+
+    char *c = comment("dimitri");
+    char *type = calloc(strlen(image1->type), sizeof(char));
+    strcpy(type, image1->type);
+
+    Image *image = new_image(M, type, c, 255, image1->nbr_line, image1->nbr_col);
+    return image;
 }
 
 Image * not(const Image *image)
 {
+    int i = 0, j = 0;
+    int value = 0;
+    int **M_R = image->M;
+    for (i = 0; i < image->nbr_line; i++)
+    {
+        for (j = 0; j < image->nbr_col; j++)
+        {
+            M_R[i][j] = (M_R[i][j] >= 1) ? 0 : 1;
+        }
+    }
+
+    char *c = comment("dimitri");
+    char *type = calloc(strlen(image->type), sizeof(char));
+    strcpy(type, "P1");
+    Image *image_R = new_image(M_R, type, c, 255, image->nbr_line, image->nbr_col);
+
+    return image_R;
 }
 
-Image *multiplication_PGM_images(Image *image1, int coef)
+Image *multiplication_PGM_images(Image *image, float coef)
 {
+    int i = 0, j = 0;
+    int value = 0;
+    int **M_R = image->M;
+    for (i = 0; i < image->nbr_line; i++)
+    {
+        for (j = 0; j < image->nbr_col; j++)
+        {
+            value = coef * M_R[i][j];
+            M_R[i][j] = (value < 0) ? 0 : (value > 255) ? 255 : value;
+        }
+    }
+
+    char *c = comment("dimitri");
+    char *type = calloc(strlen(image->type), sizeof(char));
+    strcpy(type, "P2");
+    Image *image_R = new_image(M_R, type, c, 255, image->nbr_line, image->nbr_col);
+
+    return image_R;
 }
 
 // #endif

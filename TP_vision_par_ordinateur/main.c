@@ -7,7 +7,6 @@
 #include "header/segmentation/germ.h"
 #include "header/filter/high_pass/gradient.h"
 #include "header/filter/high_pass/laplacien.h"
-#include "header/filter/high_pass/laplacien.h"
 #include "header/filter/low_pass/low_filter.h"
 #include "header/transformations/hough_transformation.h"
 #include "header/utilitaire/utilitaire.h"
@@ -191,6 +190,10 @@ int handle_convert_error(char *nbr, char *operation)
     {
         if (is_zero(nbr) == 1 || r != 0)
         {
+            if(r < 0 || r > 255){
+                load_help();
+                exit(EXIT_FAILURE);
+            }
             return r;
         }
 
@@ -218,6 +221,15 @@ void handle_error_type_image(Image *image, char *operation)
         load_help();
         free_image(image);
         exit(EXIT_FAILURE);
+    }else if(strcmp(image->type , "P2") == 0){
+        
+    }else{
+        if (strcmp(operation, "ADD") == 0 || strcmp(operation, "M") == 0)
+        {
+            load_help();
+            free_image(image);
+            exit(EXIT_FAILURE);
+        }
     }
 }
 
@@ -295,13 +307,12 @@ void handle_args(int argc, char *argv[])
             write_image(argv[3], image_R);
             printf("linear transformation\n");
         }
-        // l'operateur AND
-        else if (strcmp(argv[1], "-A") == 0)
+        // l'operateur NOT
+        else if (strcmp(argv[1], "-NOT") == 0)
         {
-        }
-        // l'operateur OR
-        else if (strcmp(argv[1], "-O") == 0)
-        {
+            image_R = not(image);
+            write_image(argv[3], image_R);
+            printf("inverse image\n");
         }
         else
         {
@@ -388,9 +399,49 @@ void handle_args(int argc, char *argv[])
             }
             write_image(argv[4], image_R);
         }
+        //addition d'image 
+        else if (strcmp(argv[1], "-ADD") == 0)
+        {
+            printf("addition image \n");
+            Image *image1 = read_image(argv[2]);
+            handle_error_type_image(image1, "ADD");
+            Image *image2 = read_image(argv[3]);
+            handle_error_type_image(image2, "ADD");
+            image_R = add_PGM_images(image1 , image2);
+            write_image(argv[4], image_R);
+            free_image(image1);
+            free_image(image2);
+        }
+        //et logique
+        else if (strcmp(argv[1], "-AND") == 0)
+        {
+            printf("et logique image \n");
+            Image *image1 = read_image(argv[2]);
+            handle_error_type_image(image1, "AND");
+            Image *image2 = read_image(argv[3]);
+            handle_error_type_image(image2, "AND");
+            image_R = and(image1, image2);
+            write_image(argv[4], image_R);
+            free_image(image1);
+            free_image(image2);
+        }
+        //ou logique
+        else if (strcmp(argv[1], "-OR") == 0)
+        {
+            printf("ou logique image \n");
+            Image *image1 = read_image(argv[2]);
+            handle_error_type_image(image1, "OR");
+            Image *image2 = read_image(argv[3]);
+            handle_error_type_image(image2, "OR");
+            image_R = or(image1, image2);
+            write_image(argv[4], image_R);
+            free_image(image1);
+            free_image(image2);
+        }
         // convolution
         else if (strcmp(argv[1], "-CV") == 0)
         {
+
         }
         else
         {
