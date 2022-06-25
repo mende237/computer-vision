@@ -392,16 +392,6 @@ void handle_args(int argc, char *argv[])
         else if (strcmp(argv[1], "-CV") == 0)
         {
         }
-        // l'algorithme k-means
-        else if (strcmp(argv[1], "-K") == 0)
-        {
-            image = read_image(argv[3]);
-            handle_error_type_image(image, "K");
-            int nbr_cluster = handle_convert_error(argv[2], "K");
-            image_R = k_means(image, nbr_cluster);
-            write_image(argv[4], image_R);
-            printf("k-means\n");
-        }
         else
         {
             load_help();
@@ -484,6 +474,17 @@ void handle_args(int argc, char *argv[])
             image_R = handle_multi_thresholding(image , argv[2] , argv[3] , argv[4]);
             write_image(argv[5], image_R);
             printf("seuillage multiple\n");
+        } 
+        // l'algorithme k-means
+        else if (strcmp(argv[1], "-K") == 0)
+        {
+            image = read_image(argv[4]);
+            handle_error_type_image(image, "K");
+            int nbr_cluster = handle_convert_error(argv[2], "K");
+            int nbr_iter_max = handle_convert_error(argv[3], "K");
+            image_R = k_means(image, nbr_cluster , nbr_iter_max);
+            write_image(argv[5], image_R);
+            printf("k-means\n");
         }
         else
         {

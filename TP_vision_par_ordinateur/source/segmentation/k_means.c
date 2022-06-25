@@ -170,7 +170,7 @@ List *initialise(int **M , int nbr_line , int nbr_col , struct Point **center_ta
     
 }
 
-Image *k_means(Image *image, int nbr_cluster)
+Image *k_means(Image *image, int nbr_cluster , int nbr_iter_max)
 {
     typedef struct Point Point;
     int i = 0, x = 0, y = 0, color , j = 0;
@@ -206,6 +206,7 @@ Image *k_means(Image *image, int nbr_cluster)
     
     //List garbage2 = new_list();
     boolean stable = True;
+    int cmpt = 0;
     do
     {
         center_tab = calloc(nbr_cluster, sizeof(Point *));
@@ -250,7 +251,8 @@ Image *k_means(Image *image, int nbr_cluster)
             free(center_tab[i]);
         }
         free(center_tab);
-    } while (stable == False);
+        cmpt++;
+    } while (stable == False && cmpt < nbr_iter_max);
     //free_list(garbage2);
 
     int **M_R = new_int_matrix(image->nbr_line , image->nbr_col);
@@ -278,7 +280,6 @@ Image *k_means(Image *image, int nbr_cluster)
     }
     free_list(garbage);
     free_set_of_cluster(clusters_tab , nbr_cluster);
-    printf("\npasssss!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
     return image_R;
 }
 

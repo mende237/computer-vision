@@ -26,7 +26,7 @@ boolean is_stable(const List *new_cluster_tab, const List *old_cluster_tab, int 
 // initialisation des cluster en fonction des centres
 List *initialise(int **M, int nbr_line, int nbr_col, struct Point **center_tab, int nbr_cluster, List garbage);
 // l'agorithme k_means
-Image *k_means(Image *image, int nbr_cluster);
+Image *k_means(Image *image, int nbr_cluster, int nbr_iter_max);
 
 void free_set_of_cluster(List *tab, int nbr_cluster);
 void free_cluster(List cluster);

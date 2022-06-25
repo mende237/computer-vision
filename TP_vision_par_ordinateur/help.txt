@@ -72,17 +72,22 @@ FILTRE PASS BAS
 
 SEGMENTATION
     K-MEANS
-        [-K] nombre_cluster chemin_vers_le_fichier_source chemin_vers_la_sorti
-        exemple -K 5 ./source.pgm ./dest.pgm
+        [-K] nombre_cluster nombre_iteration_maximum chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -K 5 100 ./source.pgm ./dest.pgm
+        NB:la condition d'arret est que soit on arive a une stabilitée soit l'on depasse le nombre 
+        d'iterations que vous avez entré
     GERM
         [-GE] nombre_germ valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
         exemple -GE 5 10 ./source.pgm ./dest.pgm
     SEUILLAGE 
         [-SE] valeur_seuil chemin_vers_le_fichier_source chemin_vers_la_sorti
         exemple -SE 5 ./source.pgm ./dest.pgm
+        il est aussi possible de faire un seuillage automatique en utilisant 
+        [-SE] -A chemin_vers_le_fichier_source chemin_vers_la_sorti
+         exemple -SE -A ./source.pgm ./dest.pgm
     SEUILLAGE MULTIPLE
         [-SM] tableau_de_seuils tableau_de_valeurs chemin_vers_le_fichier_source chemin_vers_la_sorti
-        exemple -SM [20,100] [0,50,60]./source.pgm ./dest.pgm
+        exemple -SM [20,100] [0,50,60] ./source.pgm ./dest.pgm
         cette commande peut s'interpreter comme tout pixel p ayant pour colour x 
         si x <= 20 on affecte la valeur 0
         sinon si 20 < x <= 100 on affecte la valeur 50
