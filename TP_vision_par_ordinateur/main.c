@@ -18,6 +18,8 @@
 
 
 const char *SOFTWARE_NAME = "eog";
+const char *HELP_PATH = "./help.txt";
+
 
 void handle_args(int argc, char *argv[]);
 void handle_error_type_image(Image *image, char *operation);
@@ -83,11 +85,13 @@ Image* handle_multi_thresholding(Image *image , char *threshold_ch, char *value_
     for (i = 0; i < threshold_list->length; i++)
     {
         threshold_tab[i] = handle_convert_error((char*) get_element_list(threshold_list , i) , "SM");
+        // printf("%d ", threshold_tab[i]);
     }
-
-    for (i = 0; i < threshold_list->length; i++)
+    // printf("\n");
+    for (i = 0; i < value_list->length; i++)
     {
-        value_tab[i] = handle_convert_error((char *)get_element_list(threshold_list, i) , "SM");
+        value_tab[i] = handle_convert_error((char *)get_element_list(value_list, i) , "SM");
+        // printf("%d " , value_tab[i]);
     }
 
     i = 0;
@@ -128,7 +132,18 @@ int is_zero(char *nbr)
 
 void load_help()
 {
-    printf("chargement de l'aide\n");
+    FILE *f = fopen(HELP_PATH, "r");
+    int car = 0;
+    if (f != NULL)
+    {
+        do
+        {
+            car = fgetc(f);
+            printf("%c", car);
+        } while (car != EOF);
+        printf("\n");
+    }else
+        printf("le fichier %s n'existe pas\n" , HELP_PATH);
 }
 
 int handle_convert_error(char *nbr, char *operation)

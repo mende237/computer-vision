@@ -59,7 +59,7 @@ Image *multi_thresholding(Image *image, int *threshold_tab , int *val_tab, int n
                 k++;
 
             M_R[i][j] = val_tab[k];
-
+            //printf("%d\n" , val_tab[k]);
         }
     }
 
