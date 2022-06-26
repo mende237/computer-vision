@@ -122,11 +122,6 @@ int otsu(Image *image)
     
     float *hist_norm = normalise_histogram(hist , nbr_pixel);
 
-    // for (i = 0; i < 256; i++)
-    // {
-    //     printf("%f\n" , hist_norm[i]);
-    // }
-    
     for (i = 0; i < 255; i++)
     {
         float *prob_var1 = compute_otsu(hist_norm, 0, i, nbr_pixel);
@@ -156,8 +151,6 @@ int otsu(Image *image)
     int threshold = *((int*) t->a);
     for (i = 0; i < 255; i++)
     {
-        // t = within_variance[i];
-        // printf("%d  %f\n" , *((int*) t->a) , *((float*) t->b));
         free_tuple(within_variance[i] , 1);
     }
     

@@ -566,14 +566,14 @@ int main(int argc, char *argv[])
     //     free(get_element_list(list, i));
     // }
     
-    handle_args(argc, argv);
-    exit(EXIT_SUCCESS);
+    // handle_args(argc, argv);
+    // exit(EXIT_SUCCESS);
 
     // int a = atoi("aqdqsd");
     // printf("%d\n", a);
     // int i = 0, j = 0;
     // Image *image1 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
-    Image *image_test = read_image("oiseau.pgm");
+    Image *image_test = read_image("circuit.pgm");
     // Image *image2 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
     // Image *image = add_PGM_images(image1, image2);
     Image *image_R;
@@ -591,12 +591,12 @@ int main(int argc, char *argv[])
     // image_R = gaussian_filter(image_test, 3, 3);
     // // image_R = germ(image_test, 7 , 25);
     // // image_R = median_filter(image_test , 3 , 3);
-    // //image_R = voting_image(image_test, 0.1, "laplacien");
+    image_R = voting_image(image_test, 1.0 ,  1.0  , "gradient");
 
     //image_R = laplacien(image_test, -1);
-    char threshold_ch[] = "[50]";
-    char val[] = "[0,1]";
-    image_R = handle_multi_thresholding(image_test , threshold_ch , val , "oiseau.pgm");
+    // char threshold_ch[] = "[50]";
+    // char val[] = "[0,1]";
+    // image_R = handle_multi_thresholding(image_test , threshold_ch , val , "oiseau.pgm");
     ////image_R = equal_histogram(image_test);
     // //  int a = 10 , b = 15;
     // //  struct Tuple *tuple = new_tuple(&a , &b);

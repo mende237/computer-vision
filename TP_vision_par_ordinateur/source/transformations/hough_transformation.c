@@ -12,6 +12,7 @@
 #include "../../header/filter/high_pass/gradient.h"
 #include "../../header/filter/high_pass/laplacien.h"
 #include "../../header/data_structure/linked_list.h"
+#include "../../header/segmentation/thresholding.h"
 #include "../../header/struct/Image.h"
 
 #define PI 3.14159
@@ -40,7 +41,8 @@ static float absolute_value(float value){
 
     return value;
 }
-Image *voting_image(Image *image, float step, char *outline_algorithm)
+
+Image *voting_image(Image *image, float theta , float rho, char *outline_algorithm)
 {
     Image *image_outline = NULL;
     if (strcmp(outline_algorithm, "sobel") == 0)
@@ -64,77 +66,36 @@ Image *voting_image(Image *image, float step, char *outline_algorithm)
         image_outline = gradient(image, -1);
     }
 
-    int length = PI / step;
-    printf("--------------------%d , %f  %f\n" ,length, step , PI);
-    int i = 0, j = 0, cmpt = 0;
-    float theta = 0.0;
-    typedef struct Tuple Tuple;
-    
-   
+    int i = 0 , j = 0 , t = 0;
+    int nbr_theta = 180 / theta;
+    int nbr_rho = pow(image->nbr_line * image->nbr_line + image->nbr_col * image->nbr_col , 0.5)/ (float)rho;
 
-    char** key_tab = calloc(image->nbr_line * image->nbr_col , sizeof(char*));
-
-    hcreate(image->nbr_line * image->nbr_col);
-    ENTRY e;
-    ENTRY *dic_element;
+    float step_theta = PI / (float) nbr_theta;
+    float step_rho = pow(image->nbr_line*image->nbr_line + image->nbr_col*image->nbr_col , 0.5) / (float) nbr_rho;
 
     int **M = image_outline->M;
-    int q = 0;
+    int **M_V = new_int_matrix(nbr_theta , nbr_rho);
     for (i = 0; i < image->nbr_line; i++)
     {
-        printf("%d\n" , i);
         for (j = 0; j < image->nbr_col; j++)
         {
-            if(M[i][j] != 0){
-                cmpt = 0;
-                for (theta = 0; theta <= PI; theta += step)
+            if(M[i][j] != 1){
+                for (t = 0; t < nbr_theta; t++)
                 {
-                    float rho = i*cos(theta) + j*sin(theta);
-                    char *key = calloc(20 , sizeof(char));
-                    sprintf(key , "%f" , rho);
-                    key_tab[q] = key;
-                    e.key = key;
-                    dic_element = hsearch(e, FIND);
-                    int *temp;
-                    if (dic_element == NULL)
-                    {
-                        temp = calloc(length + 1, sizeof(int));
-                        temp[cmpt]++;
-                        e.data = temp;
-                        dic_element = hsearch(e, ENTER);
-                    }
-                    else
-                    {
-                        temp = dic_element->data;
-                        temp[cmpt]++;
-                    }
+                    float temp_theta = t * step_theta;
+                    float temp_rho = j*cos(temp_theta) + (image->nbr_line - i)*sin(temp_theta);
+                    int temp_int_rho = temp_rho/step_rho;
+                    if(temp_int_rho >0 && temp_int_rho < nbr_rho)
+                        M_V[t][temp_int_rho] += 1;
                 }
-            }else{
-                //printf("enter");
-            }
-            q++;
-        }
-    }
-
-    int **M_R = new_int_matrix(image->nbr_line + image->nbr_col , image->nbr_line + image->nbr_col);
-    for (i = 0; i < image->nbr_line * image->nbr_col; i++)
-    {
-        if (key_tab[i] != NULL){
-            e.key = key_tab[i];
-            dic_element = hsearch(e, FIND);
-            int *temp = e.data;
-            for (j = 0; j < length; j++)
-            {
-                int x = absolute_value(atof(key_tab[i])*cos(temp[j]));
-                int y = absolute_value(atof(key_tab[i]) * sin(temp[j]));
-                M_R[x][y] = 20;
             }
         }
     }
+    
 
     char *c = comment("dimitri");
     char *type = calloc(strlen(image->type), sizeof(char));
-    strcpy(type, image_outline->type);
+    strcpy(type, "P2");
     // Image *image = malloc(sizeof(Image));
     // image->type  = type;
     // image->comment = c;
@@ -142,14 +103,8 @@ Image *voting_image(Image *image, float step, char *outline_algorithm)
     // image->nbr_line = image1->nbr_line;
     // image->nbr_col = image1->nbr_col;
     // image->M = M;
-    Image *image_R = new_image(M_R, type, c, 255, image_outline->nbr_line * image_outline->nbr_col, image_outline->nbr_line * image_outline->nbr_col);
-    for (i = 0; i < image_outline->nbr_line * image_outline->nbr_col; i++)
-    {
-        free(key_tab[i]);
-    }
-    
-    free(key_tab);
-    hdestroy();
+    Image *image_R = new_image(M_V, type, c, 255, nbr_theta , nbr_rho);
+  
     return image_R;
 }
 

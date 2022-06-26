@@ -1,8 +1,8 @@
 CC = /usr/bin/gcc-9
 all:final
 
-final:main.o gradient.o k_means.o germ.o low_filter.o hough_transformation.o laplacien.o operations.o utilitaire.o operations.o image.o low_filter.o thresholding.o linked_list.o
-	$(CC) -g main.o utilitaire.o gradient.o matrix.o operations.o  thresholding.o k_means.o germ.o laplacien.o low_filter.o convolution.o linked_list.o stack.o image.o -lm -o main
+final:main.o gradient.o k_means.o germ.o low_filter.o hough_transformation.o laplacien.o operations.o utilitaire.o operations.o image.o low_filter.o thresholding.o linked_list.o hough_transformation.o
+	$(CC) -g main.o utilitaire.o gradient.o matrix.o operations.o  thresholding.o k_means.o germ.o laplacien.o low_filter.o convolution.o hough_transformation.o linked_list.o stack.o image.o -lm -o main
 
 main.o:main.c 
 	$(CC) -g -c -w main.c -o main.o

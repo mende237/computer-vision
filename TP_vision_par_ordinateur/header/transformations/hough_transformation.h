@@ -5,7 +5,7 @@
 #include "../struct/structure.h"
 
 Image* hough_transformation(Image* image);
-Image* voting_image(Image *image , float step , char *outline_algorithm);
+Image* voting_image(Image *image , float nbr_theta , float nbr_rho , char *outline_algorithm);
 boolean equal_tuple1(void *tuple1, void*tuple2 ,...);
 
 #endif
