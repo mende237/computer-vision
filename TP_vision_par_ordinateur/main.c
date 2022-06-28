@@ -13,12 +13,13 @@
 #include "header/base_operations/operations.h"
 #include "header/segmentation/thresholding.h"
 #include "header/struct/Image.h"
+#include "header/struct/structure.h"
 #include "header/data_structure/linked_list.h"
 
 
 const char *SOFTWARE_NAME = "eog";
 const char *HELP_PATH = "./help.txt";
-
+typedef struct Tuple Tuple;
 
 void handle_args(int argc, char *argv[]);
 void handle_error_type_image(Image *image, char *operation);
@@ -314,6 +315,12 @@ void handle_args(int argc, char *argv[])
             write_image(argv[3], image_R);
             printf("inverse image\n");
         }
+        else if (strcmp(argv[1], "-HI") == 0)
+        {
+            image_R = print_hist(image);
+            write_image(argv[3], image_R);
+            printf("enter histogramme\n");
+        }
         else
         {
             load_help();
@@ -546,7 +553,34 @@ void handle_args(int argc, char *argv[])
         free_image(image);
         free_image(image_R);
     }
-    else
+    else if (argc == 7){
+        Image *image;
+        Image *image_R;
+        if (strcmp(argv[1], "-H") == 0)
+        {
+            float theta = atof(argv[2]);
+            float rho =  atof(argv[3]);
+            if(theta == 0 || rho == 0){
+                load_help();
+                exit(EXIT_FAILURE);
+            }
+            char *outline_algorithm = argv[4];
+            image = read_image(argv[5]);
+            void **tab = voting_image(image , theta , rho , outline_algorithm);     
+            Image *image_R = tab[0];
+            write_image(argv[6], image_R);
+            print_image(SOFTWARE_NAME, argv[6]);
+            int threshold = 0;
+            printf("entrer la valeur du seuil > ");
+            scanf("%d" , &threshold);
+            hough_transformation(tab[0] , tab[1] , *((float*) tab[2]) , *((float*) tab[3]) , threshold);
+            write_image(argv[6], tab[1]);
+            print_image(SOFTWARE_NAME, argv[6]);
+        }else{
+            load_help();
+            exit(EXIT_FAILURE);
+        }
+    }else
     {
         load_help();
         exit(EXIT_FAILURE);
@@ -566,14 +600,14 @@ int main(int argc, char *argv[])
     //     free(get_element_list(list, i));
     // }
     
-    // handle_args(argc, argv);
-    // exit(EXIT_SUCCESS);
+    handle_args(argc, argv);
+    exit(EXIT_SUCCESS);
 
     // int a = atoi("aqdqsd");
     // printf("%d\n", a);
     // int i = 0, j = 0;
     // Image *image1 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
-    Image *image_test = read_image("circuit.pgm");
+    Image *image_test = read_image("photograph.pgm");
     // Image *image2 = read_image("/home/dimitri/Bureau/marioArretGauche.pgm");
     // Image *image = add_PGM_images(image1, image2);
     Image *image_R;
@@ -591,8 +625,19 @@ int main(int argc, char *argv[])
     // image_R = gaussian_filter(image_test, 3, 3);
     // // image_R = germ(image_test, 7 , 25);
     // // image_R = median_filter(image_test , 3 , 3);
-    image_R = voting_image(image_test, 1.0 ,  1.0  , "gradient");
+    // void**tab = voting_image(image_test, 1.0 ,  1.0  , "laplacien");
+    // image_R = tab[0];
+    // hough_transformation(tab[0], tab[1], *((float *)tab[2]), *((float *)tab[3]) , 80);
+    // free(tab[2]);
+    // free(tab[3]);
+    // free(tab);
 
+    image_R = print_hist(image_test);
+
+    // image_R = laplacien(image_test , -1);
+    // draw_line(image_R , 129.013 , 0);
+
+    //image_R = sobel(image_test , -1);
     //image_R = laplacien(image_test, -1);
     // char threshold_ch[] = "[50]";
     // char val[] = "[0,1]";

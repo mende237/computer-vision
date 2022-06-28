@@ -4,8 +4,10 @@
 #include "../struct/matrix.h"
 #include "../struct/structure.h"
 
-Image* hough_transformation(Image* image);
-Image* voting_image(Image *image , float nbr_theta , float nbr_rho , char *outline_algorithm);
-boolean equal_tuple1(void *tuple1, void*tuple2 ,...);
+
+void draw_line(Image *image , float a , float b);
+Image *hough_transformation(Image *image_v, Image *image_B, float theta_step, float rho_step, int threshold);
+void** voting_image(Image *image, float theta, float rho, char *outline_algorithm);
+static float absolute_value(float value);
 
 #endif

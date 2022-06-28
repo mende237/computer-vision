@@ -4,6 +4,7 @@
 #include "../struct/matrix.h"
 
 void *histogram(Image *image);
+Image *print_hist(Image *image);
 Image *equal_histogram(Image *image);
 float* normalise_histogram(int *hist , int nbr_pixel);
 Image *linear_transformation(Image *image, int min, int max);

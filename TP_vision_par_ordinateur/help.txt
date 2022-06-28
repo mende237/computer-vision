@@ -12,11 +12,15 @@ OPERATION
         [-OR] chemin_vers_le_fichier_source1 chemin_vers_le_fichier_source2 chemin_vers_la_sorti
         exemple -OR ./source1.pgm ./source2.pgm ./dest.pbm
     NOT
-        [-NOT] chemin_vers_le_fichier_source1 chemin_vers_la_sorti
-        exemple -NOT ./source1.pgm  ./dest.pbm
+        [-NOT] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -NOT ./source.pgm  ./dest.pbm
     INTERPOLATION
-        [-I] chemin_vers_le_fichier_source1 chemin_vers_la_sorti
-        exemple -I ./source1.pgm  ./dest.pbm
+        [-I] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -I ./source.pgm  ./dest.pbm
+    HISTOGRAMME
+        [-HI] chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -HI ./source.pgm  ./dest.pbm
+    
 
 CONVOLUTION
     [-CV] chemin_vers_le_fichier_source chemin_fichier_contenant_la_matrice chemin_vers_la_sorti
@@ -108,5 +112,9 @@ SEGMENTATION
         etre egale a celle des valeur moins un 
 
 TRANSFORMATION
-
     HOUGH
+        [-H] valeur_theta valeur_rho algorithme_contour chemin_vers_le_fichier_source chemin_vers_la_sorti
+        exemple -H 1.0 1.0 laplacien ./source.pgm ./dest.pbm
+        après l'execution de cette commande vous devrez entrer la valeur seuil pour determiner le nombre 
+        de droite a considerer
+    
