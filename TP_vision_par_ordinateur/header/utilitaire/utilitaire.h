@@ -26,4 +26,5 @@ struct Tuple *new_tuple(void *a, void *b);
 void free_tuple(struct Tuple *tuple , int free_inner);
 void free_image(Image *image);
 void print_image(char *software_name , char *path);
+Matrix* read_matrix(char *path);
 #endif

@@ -16,11 +16,14 @@
 #include "header/struct/structure.h"
 #include "header/data_structure/linked_list.h"
 
-
+/**********************************************/
+/************* CONFIGURATION *****************/
+//le logiciel de visualisation
 const char *SOFTWARE_NAME = "eog";
 const char *HELP_PATH = "./help.txt";
-typedef struct Tuple Tuple;
+/*********************************************/
 
+typedef struct Tuple Tuple;
 void handle_args(int argc, char *argv[]);
 void handle_error_type_image(Image *image, char *operation);
 int handle_convert_error(char *nbr, char *operation);
@@ -236,11 +239,22 @@ void handle_error_type_image(Image *image, char *operation)
 
 void handle_args(int argc, char *argv[])
 {
-    printf("le nombre d'argument est %d\n", argc);
+    // printf("le nombre d'argument est %d\n", argc);
     if (argc <= 1)
     {
         load_help();
         exit(EXIT_FAILURE);
+    }
+    else if(argc == 3){
+        Image *image;
+        // constraste
+        if (strcmp(argv[1], "-C") == 0)
+        {
+            image = read_image(argv[2]);
+            float c = contraste(image);
+            printf("le contraste est :> %f\n", c);
+        }
+        free_image(image);
     }
     else if (argc == 4)
     {
@@ -274,32 +288,27 @@ void handle_args(int argc, char *argv[])
         {
             image_R = prewit(image, -2);
             write_image(argv[3], image_R);
-            printf("enter sobel\n");
+            //printf("enter sobel\n");
         }
         // laplacien
         else if (strcmp(argv[1], "-S") == 0)
         {
             image_R = sobel(image, -2);
             write_image(argv[3], image_R);
-            printf("enter sobel\n");
+            //printf("enter sobel\n");
         }
         else if (strcmp(argv[1], "-L") == 0)
         {
             image_R = laplacien(image, -2);
             write_image(argv[3], image_R);
-            printf("enter laplacien\n");
+            //printf("enter laplacien\n");
         }
         // egalisation d'histigramme
         else if (strcmp(argv[1], "-EH") == 0)
         {
             image_R = equal_histogram(image);
             write_image(argv[3], image_R);
-            printf("equal histogram\n");
-        }
-        // constraste
-        else if (strcmp(argv[1], "-C") == 0)
-        {
-            float c = contraste(image);
+            //printf("equal histogram\n");
         }
         // transformation lineaire
         else if (strcmp(argv[1], "-LT") == 0)
@@ -313,13 +322,13 @@ void handle_args(int argc, char *argv[])
         {
             image_R = not(image);
             write_image(argv[3], image_R);
-            printf("inverse image\n");
+            //printf("inverse image\n");
         }
         else if (strcmp(argv[1], "-HI") == 0)
         {
             image_R = print_hist(image);
             write_image(argv[3], image_R);
-            printf("enter histogramme\n");
+            //printf("enter histogramme\n");
         }
         else
         {
@@ -346,7 +355,7 @@ void handle_args(int argc, char *argv[])
             threshold = handle_convert_error(argv[2], "G");
             image_R = gradient(image, threshold);
             write_image(argv[4], image_R);
-            printf("enter gradient seuilage \n");
+            //printf("enter gradient seuilage \n");
         }
         // sobel avec seuillage
         else if (strcmp(argv[1], "-S") == 0)
@@ -354,7 +363,7 @@ void handle_args(int argc, char *argv[])
             image = read_image(argv[3]);
             handle_error_type_image(image, "G");
             threshold = handle_convert_error(argv[2], "G");
-            printf("enter sobel seuillage \n");
+            //printf("enter sobel seuillage \n");
             image_R = sobel(image, threshold);
             write_image(argv[4], image_R);
         }
@@ -366,7 +375,7 @@ void handle_args(int argc, char *argv[])
             threshold = handle_convert_error(argv[2], "R");
             image_R = robert(image, threshold);
             write_image(argv[4], image_R);
-            printf("enter robert\n");
+            //printf("enter robert\n");
         }
         // prewitt avec seuillage
         else if (strcmp(argv[1], "-P") == 0)
@@ -376,7 +385,7 @@ void handle_args(int argc, char *argv[])
             threshold = handle_convert_error(argv[2], "P");
             image_R = prewit(image, threshold);
             write_image(argv[4], image_R);
-            printf("enter prewitt\n");
+            //printf("enter prewitt\n");
         }
         // laplacien avec seuillage
         else if (strcmp(argv[1], "-L") == 0)
@@ -386,12 +395,12 @@ void handle_args(int argc, char *argv[])
             threshold = handle_convert_error(argv[2], "G");
             image_R = laplacien(image, threshold);
             write_image(argv[4], image_R);
-            printf("enter gradient\n");
+            //printf("enter gradient\n");
         }
         // seuillage
         else if (strcmp(argv[1], "-SE") == 0)
         {
-            printf("enter seuillage\n");
+            //printf("enter seuillage\n");
             image = read_image(argv[3]);
             handle_error_type_image(image, "SE");
             threshold = handle_convert_error(argv[2], "SE");
@@ -409,7 +418,7 @@ void handle_args(int argc, char *argv[])
         //addition d'image 
         else if (strcmp(argv[1], "-ADD") == 0)
         {
-            printf("addition image \n");
+            //printf("addition image \n");
             Image *image1 = read_image(argv[2]);
             handle_error_type_image(image1, "ADD");
             Image *image2 = read_image(argv[3]);
@@ -422,7 +431,7 @@ void handle_args(int argc, char *argv[])
         //et logique
         else if (strcmp(argv[1], "-AND") == 0)
         {
-            printf("et logique image \n");
+            //printf("et logique image \n");
             Image *image1 = read_image(argv[2]);
             handle_error_type_image(image1, "AND");
             Image *image2 = read_image(argv[3]);
@@ -435,7 +444,7 @@ void handle_args(int argc, char *argv[])
         //ou logique
         else if (strcmp(argv[1], "-OR") == 0)
         {
-            printf("ou logique image \n");
+            //printf("ou logique image \n");
             Image *image1 = read_image(argv[2]);
             handle_error_type_image(image1, "OR");
             Image *image2 = read_image(argv[3]);
@@ -448,7 +457,11 @@ void handle_args(int argc, char *argv[])
         // convolution
         else if (strcmp(argv[1], "-CV") == 0)
         {
-
+            Image *image = read_image(argv[2]);
+            Matrix *conv_matrix = read_matrix(argv[3]);
+            image_R = convolution_image(image , conv_matrix);
+            write_image(argv[4], image_R);
+            free_matrix(conv_matrix , 1);
         }
         else
         {
@@ -480,7 +493,7 @@ void handle_args(int argc, char *argv[])
             handle_error_type_image(image, "LT");
             image_R = linear_transformation(image, min, max);
             write_image(argv[5], image_R);
-            printf("linear transformation\n");
+            //printf("linear transformation\n");
         }
         // filtre moyenneur
         else if (strcmp(argv[1], "-FMO") == 0)
@@ -491,7 +504,7 @@ void handle_args(int argc, char *argv[])
             handle_error_type_image(image, "FMO");
             image_R = averaging_filter(image, height, width);
             write_image(argv[5], image_R);
-            printf("filtre moyenneur\n");
+            //printf("filtre moyenneur\n");
         }
         // filtre median
         else if (strcmp(argv[1], "-FM") == 0)
@@ -502,7 +515,7 @@ void handle_args(int argc, char *argv[])
             handle_error_type_image(image, "FM");
             image_R = median_filter(image, height, width);
             write_image(argv[5], image_R);
-            printf("filtre median\n");
+            //printf("filtre median\n");
         }
         // filtre gaussien
         else if (strcmp(argv[1], "-FG") == 0)
@@ -513,7 +526,7 @@ void handle_args(int argc, char *argv[])
             handle_error_type_image(image, "FG");
             image_R = gaussian_filter(image, height, width);
             write_image(argv[5], image_R);
-            printf("filtre moyenneur\n");
+            //printf("filtre moyenneur\n");
         } // algorithme de germ
         else if (strcmp(argv[1], "-GE") == 0)
         {
@@ -523,7 +536,7 @@ void handle_args(int argc, char *argv[])
             handle_error_type_image(image, "GE");
             image_R = germ(image, nbr_gem, threshold);
             write_image(argv[5], image_R);
-            printf("germ\n");
+            //printf("germ\n");
         }
         else if (strcmp(argv[1], "-SM") == 0)
         {
@@ -531,7 +544,7 @@ void handle_args(int argc, char *argv[])
             handle_error_type_image(image, "SM");
             image_R = handle_multi_thresholding(image , argv[2] , argv[3] , argv[4]);
             write_image(argv[5], image_R);
-            printf("seuillage multiple\n");
+            //printf("seuillage multiple\n");
         } 
         // l'algorithme k-means
         else if (strcmp(argv[1], "-K") == 0)
@@ -542,7 +555,7 @@ void handle_args(int argc, char *argv[])
             int nbr_iter_max = handle_convert_error(argv[3], "K");
             image_R = k_means(image, nbr_cluster , nbr_iter_max);
             write_image(argv[5], image_R);
-            printf("k-means\n");
+            //printf("k-means\n");
         }
         else
         {
@@ -602,6 +615,9 @@ int main(int argc, char *argv[])
     
     handle_args(argc, argv);
     exit(EXIT_SUCCESS);
+
+    // read_matrix("matrix.txt");
+    // exit(EXIT_SUCCESS);
 
     // int a = atoi("aqdqsd");
     // printf("%d\n", a);

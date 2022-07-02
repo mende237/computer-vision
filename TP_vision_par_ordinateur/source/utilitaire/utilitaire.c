@@ -163,9 +163,9 @@ void read_head(FILE *file, Image *image)
     image->nbr_col = nbr_col;
     image->val_max = max_value;
 
-    printf("%s\n", comment);
-    printf("%d  %d\n", nbr_line, nbr_col);
-    printf("%d\n", max_value);
+    // printf("%s\n", comment);
+    // printf("%d  %d\n", nbr_line, nbr_col);
+    // printf("%d\n", max_value);
 }
 
 void read_PBM(FILE *file, Image *image)
@@ -205,7 +205,7 @@ void read_PGM(FILE *file, Image *image)
     int i = 0, j = 0, temp, cmpt = 0;
     read_head(file, image);
     int **M = new_int_matrix(image->nbr_line, image->nbr_col);
-    printf("nbre_line : %d  nbr_col : %d\n", image->nbr_line, image->nbr_col);
+    //printf("nbre_line : %d  nbr_col : %d\n", image->nbr_line, image->nbr_col);
     for (cmpt = 0; cmpt < image->nbr_line * image->nbr_col; cmpt++)
     {
         fscanf(file, "%d", &temp);
@@ -271,16 +271,16 @@ Image *read_image(char *path)
     if (strcmp(type, "P1") == 0)
     {
         read_PBM(file, image);
-        printf("binnaire\n");
+        //printf("binnaire\n");
     }
     else if (strcmp(type, "P2") == 0)
     {
         read_PGM(file, image);
-        printf("niveau de gris\n");
+        //printf("niveau de gris\n");
     }
     else if (strcmp(type, "P3") == 0)
     {
-        printf("couleur\n");
+        //printf("couleur\n");
         read_PPM(file, image);
     }
     else
@@ -370,6 +370,49 @@ void free_tuple(struct Tuple *tuple , int free_inner){
         free(tuple->b);
     }
     free(tuple);
+}
+
+Matrix *read_matrix(char *path){
+    FILE* file = fopen(path , "r");
+    if(file == NULL){
+        printf("impossible d'ouvrir le fichier %s" , path);
+        exit(EXIT_FAILURE);
+    }
+    int nbr_line = 0  , nbr_col = 0;
+    fscanf(file, "%d %d", &nbr_col, &nbr_line);
+    if(nbr_col%2 == 0 || nbr_line%2 == 0){
+        printf("la taille de la matrice doit etre impaire");
+        exit(EXIT_FAILURE);
+    }
+
+    float **M = new_float_matrix(nbr_line , nbr_col);
+    int cmpt = 0 , i = 0 , j = 0;
+    float temp = 0;
+    for (cmpt = 0; cmpt < nbr_line * nbr_col; cmpt++)
+    {
+        fscanf(file, "%f", &temp);
+        if (cmpt % nbr_col == 0 && cmpt != 0)
+            i++;
+
+        M[i][j] = temp;
+
+        if ((j + 1) % nbr_col == 0)
+            j = 0;
+        else
+            j++;
+    }
+
+    for (i = 0; i < nbr_line; i++)
+    {
+        for (j = 0; j < nbr_col; j++)
+        {
+            printf("%f\t",M[i][j]);
+        }
+        printf("\n");
+    }   
+
+    Matrix* matrix = new_matrix(M , nbr_line , nbr_col);
+    return matrix;
 }
 
 // #endif

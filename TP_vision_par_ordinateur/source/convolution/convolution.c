@@ -49,5 +49,19 @@ Matrix* convolution(Matrix* Mat, Matrix *conv_Mat, int max_value)
     return result;
 }
 
+Image* convolution_image(Image* image , Matrix* conv_matrix){
+    Matrix *matrix_IN = new_matrix(image->M , image->nbr_line , image->nbr_col);
+    Matrix *matrix_R = convolution(matrix_IN , conv_matrix , image->val_max);
+
+    char *c = comment("dimitri");
+    char *type = calloc(strlen(image->type), sizeof(char));
+    strcpy(type, image->type);
+    Image *image_R = new_image(matrix_R->M , type , c , 255 , image->nbr_line, image->nbr_col);
+    
+    free_matrix(matrix_R , 0);
+    free_matrix(matrix_IN , 0);
+    return image_R;
+}
+
 
 // #endif
